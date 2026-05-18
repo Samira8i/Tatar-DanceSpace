@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">События на модерации</h2>
+
+        <a th:href="@{/admin}" class="btn btn-outline" style="margin-bottom: 1rem;">← Назад</a>
+
+        <div class="grid grid-2">
+            <div th:each="event : ${events}" class="card">
+                <div class="card-content">
+                    <h3 th:text="${event.title}">Название</h3>
+                    <p><strong>Дата:</strong> <span th:text="${#temporals.format(event.dateTime, 'dd.MM.yyyy HH:mm')}"></span></p>
+                    <p><strong>Место:</strong> <span th:text="${event.place}"></span></p>
+                    <p><strong>Стиль:</strong> <span th:text="${event.style}"></span></p>
+                    <p><strong>Организатор:</strong> <span th:text="${event.organizer.username}"></span></p>
+                    <p><strong>Описание:</strong> <span th:text="${event.description}"></span></p>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <form th:action="@{/admin/events/{id}/approve(id=${event.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-primary">✅ Одобрить</button>
+                        </form>
+                        <form th:action="@{/admin/events/{id}/reject(id=${event.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="return confirm('Удалить событие?')">❌ Отклонить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${events.empty}" class="text-center" style="padding: 4rem;">
+            <p>Нет событий на модерации</p>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

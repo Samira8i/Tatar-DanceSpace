@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body class="auth-body">
+<div class="auth-container">
+    <div class="auth-header">
+        <h1>Регистрация</h1>
+        <p class="subtitle">Создайте аккаунт в Tatar DanceSpace</p>
+    </div>
+
+    <div th:if="${emailError}" class="auth-error" th:text="${emailError}"></div>
+    <div th:if="${usernameError}" class="auth-error" th:text="${usernameError}"></div>
+    <div th:if="${passwordError}" class="auth-error" th:text="${passwordError}"></div>
+    <div th:if="${error}" class="auth-error" th:text="${error}"></div>
+
+    <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+        <div class="form-group">
+            <label class="form-label">Имя пользователя</label>
+            <input type="text" th:field="*{username}" class="form-control" placeholder="Как вас называть?"
+                   th:classappend="${#fields.hasErrors('username')} ? 'error' : ''">
+            <div class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control" placeholder="your@email.com"
+                   th:classappend="${#fields.hasErrors('email')} ? 'error' : ''">
+            <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Пароль</label>
+            <input type="password" th:field="*{password}" class="form-control" placeholder="Минимум 6 символов"
+                   th:classappend="${#fields.hasErrors('password')} ? 'error' : ''">
+            <div class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Подтвердите пароль</label>
+            <input type="password" th:field="*{confirmPassword}" class="form-control" placeholder="Введите пароль ещё раз">
+        </div>
+
+        <button type="submit" class="auth-button">Зарегистрироваться</button>
+    </form>
+
+    <div class="auth-links">
+        Уже есть аккаунт? <a th:href="@{/login}">Войти</a>
+    </div>
+
+    <div class="auth-divider">
+        <span>или</span>
+    </div>
+
+    <a th:href="@{/oauth2/authorization/yandex}" class="social-button" style="text-decoration: none; display: inline-block; text-align: center;">
+        Войти через Яндекс
+    </a>
+</div>
+</body>
+</html>

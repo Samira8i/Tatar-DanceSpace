@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<nav th:fragment="navbar" class="navbar">
+    <div class="navbar-container">
+        <a th:href="@{/}" class="logo">
+             Tatar<span>DanceSpace</span>
+        </a>
+        <div class="nav-menu">
+            <div th:if="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/halls}" class="nav-link">Залы</a>
+                <a th:href="@{/events}" class="nav-link">События</a>
+            </div>
+
+            <div th:if="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/profile}" class="nav-link">Профиль</a>
+                <a th:href="@{/logout}" class="btn btn-outline">Выйти</a>
+            </div>
+            <div th:unless="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/login}" class="btn btn-outline">Войти</a>
+                <a th:href="@{/register}" class="btn btn-primary">Регистрация</a>
+            </div>
+            <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <a th:href="@{/admin}" class="nav-link">Админка</a>
+            </div>
+        </div>
+    </div>
+</nav>
+</html>

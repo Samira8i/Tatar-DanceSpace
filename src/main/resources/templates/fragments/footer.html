@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<footer th:fragment="footer" class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Tatar DanceSpace</h4>
+                <p>Танцевальное сообщество Татарстана</p>
+                <p>Танцуй, вдохновляй, создавай!</p>
+            </div>
+            <div class="footer-section">
+                <h4>Разделы</h4>
+                <a th:href="@{/halls}">Танцевальные залы</a>
+                <a th:href="@{/events}">События</a>
+                <a th:href="@{/about}">О проекте</a>
+            </div>
+            <div class="footer-section">
+                <h4>Контакты</h4>
+                <a href="mailto:info@tatardancespace.ru">info@tatardancespace.ru</a>
+                <a href="tel:+78431234567">+7 (843) 123-45-67</a>
+            </div>
+            <div class="footer-section">
+                <h4>Мы в соцсетях</h4>
+                <a href="#">Telegram</a>
+                <a href="#">ВКонтакте</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Tatar DanceSpace. Все права защищены.</p>
+        </div>
+    </div>
+</footer>
+</html>

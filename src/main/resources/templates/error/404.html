@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="error-section">
+    <div class="container" style="text-align: center; padding: 4rem 2rem;">
+        <img th:src="@{/images/error/404.png}"
+             alt="Страница не найдена"
+             style="max-width: 300px; width: 100%; margin-bottom: 2rem;">
+
+        <h1 style="font-size: 6rem; color: var(--sapphire); margin: 0;">404</h1>
+        <h2 style="color: var(--gray-700); margin-top: 0.5rem;">Страница не найдена</h2>
+
+        <p style="color: var(--gray-500); max-width: 400px; margin: 1rem auto;">
+            Кажется, страница, которую вы ищете, потерялась или была удалена.
+        </p>
+
+        <div style="margin-top: 2rem;">
+            <a th:href="@{/}" class="btn btn-primary">🍂 На главную</a>
+            <a href="javascript:history.back()" class="btn btn-outline" style="margin-left: 1rem;">↻ Назад</a>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<style>
+    .error-section {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+</body>
+</html>

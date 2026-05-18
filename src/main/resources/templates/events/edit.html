@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="section">
+    <div class="container">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <h2 class="section-title">Редактировать событие</h2>
+
+            <form th:action="@{/events/{id}/edit(id=${event.id})}" th:object="${eventRequest}" method="post">
+                <div class="form-group">
+                    <label class="form-label">Название</label>
+                    <input type="text" th:field="*{title}" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Дата и время</label>
+                    <input type="datetime-local" th:field="*{dateTime}" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Стиль танца</label>
+                    <input type="text" th:field="*{style}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Место проведения</label>
+                    <input type="text" th:field="*{place}" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea th:field="*{description}" class="form-control" rows="5"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ссылка на фото</label>
+                    <input type="text" th:field="*{imageUrl}" class="form-control">
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-outline">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

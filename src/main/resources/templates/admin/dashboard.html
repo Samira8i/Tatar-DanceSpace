@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Панель администратора</h2>
+
+        <div class="grid grid-2" style="max-width: 600px; margin: 0 auto;">
+            <div class="card text-center">
+                <div class="card-content">
+                    <div style="font-size: 3rem;">🏛️</div>
+                    <h3>Залы на модерации</h3>
+                    <p class="stat-number" th:text="${pendingHallsCount}">0</p>
+                    <a th:href="@{/admin/halls/pending}" class="btn btn-primary">Проверить</a>
+                </div>
+            </div>
+
+            <div class="card text-center">
+                <div class="card-content">
+                    <div style="font-size: 3rem;">🎭</div>
+                    <h3>События на модерации</h3>
+                    <p class="stat-number" th:text="${pendingEventsCount}">0</p>
+                    <a th:href="@{/admin/events/pending}" class="btn btn-primary">Проверить</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

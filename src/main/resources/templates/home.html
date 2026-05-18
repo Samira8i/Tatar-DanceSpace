@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Hero секция -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Tatar DanceSpace</h1>
+            <p>Танцевальное сообщество Татарстана</p>
+            <div th:unless="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/register}" class="btn btn-primary btn-large">Начать путь</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- О проекте -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Пространство для танца</h2>
+        <div class="grid grid-3">
+            <div class="card fade-up">
+                <div class="card-icon">🏛️</div>
+                <div class="card-content">
+                    <h3 class="card-title">Аренда залов</h3>
+                    <p class="card-text">Просторные залы с профессиональным покрытием и зеркалами</p>
+                </div>
+            </div>
+            <div class="card fade-up">
+                <div class="card-icon">🎭</div>
+                <div class="card-content">
+                    <h3 class="card-title">Мастер-классы</h3>
+                    <p class="card-text">Уроки от ведущих хореографов и танцоров</p>
+                </div>
+            </div>
+            <div class="card fade-up">
+                <div class="card-icon">💬</div>
+                <div class="card-content">
+                    <h3 class="card-title">Сообщество</h3>
+                    <p class="card-text">Единомышленники, обмен опытом, совместные проекты</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- новости -->
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <section class="section news-section">
+        <div class="container">
+            <h2 class="section-title">Новости мира танцев</h2>
+
+            <div class="grid grid-3">
+                <div th:each="item : ${news}" class="card fade-up">
+                    <div class="card-image" th:if="${item.imageUrl != null and item.imageUrl != ''}"
+                         th:style="'background-image: url(' + ${item.imageUrl} + '); background-size: cover; background-position: center; height: 160px;'"></div>
+                    <div class="card-icon large" th:unless="${item.imageUrl != null and item.imageUrl != ''}">📰</div>
+                    <div class="card-content">
+                        <span th:if="${item.publishedAt != null and item.publishedAt != ''}" class="news-date">📅 <span th:text="${item.publishedAt}"></span></span>
+                        <h3 class="card-title" th:text="${item.title}">Заголовок</h3>
+                        <p class="card-text" th:text="${item.description}">Описание...</p>
+                        <a th:href="${item.url}" target="_blank" class="btn btn-outline news-link">Подробнее →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${news.empty}" class="text-center" style="padding: 3rem;">
+                <p>Новости временно недоступны. Загляните позже!</p>
+            </div>
+
+            <!-- Кнопка "Все новости" -->
+            <div style="text-align: center; margin-top: 2rem;">
+                <a th:href="@{/news}" class="btn btn-primary">Все новости →</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Статистика -->
+<section class="section stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div>
+                <div class="stat-number">50+</div>
+                <div class="stat-label">танцевальных залов</div>
+            </div>
+            <div>
+                <div class="stat-number">100+</div>
+                <div class="stat-label">мастер-классов</div>
+            </div>
+            <div>
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">участников</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

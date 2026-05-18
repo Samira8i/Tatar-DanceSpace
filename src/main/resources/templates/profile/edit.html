@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="section">
+    <div class="container">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <h2 class="section-title">✏️ Редактировать профиль</h2>
+
+            <form th:action="@{/profile/edit}" method="post">
+                <div class="form-group">
+                    <label class="form-label">Аватар</label>
+                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                        <div style="width: 80px; height: 80px; background: var(--peach); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                            <span id="selectedAvatarPreview" th:text="${user.avatarEmoji}">🕺</span>
+                        </div>
+                        <select name="avatarEmoji" id="avatarSelect" class="form-control" style="width: auto; flex: 1;">
+                            <option th:each="avatar : ${avatars}" th:value="${avatar}" th:text="${avatar}" th:selected="${avatar == user.avatarEmoji}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Имя пользователя</label>
+                    <input type="text" name="username" class="form-control" th:value="${user.username}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" th:value="${user.email}" disabled style="background: var(--gray-100);">
+                    <small style="color: var(--gray-500);">Email нельзя изменить</small>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a th:href="@{/profile}" class="btn btn-outline">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    // Предпросмотр выбранного эмодзи
+    document.getElementById('avatarSelect').addEventListener('change', function() {
+        document.getElementById('selectedAvatarPreview').textContent = this.value;
+    });
+</script>
+
+</body>
+</html>

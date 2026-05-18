@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: dancespace-postgres
+    environment:
+      POSTGRES_DB: dancespace
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"  # Используем порт 5434
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dancespace-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: dancespace-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - dancespace-network
+    command: redis-server --appendonly yes
+
+networks:
+  dancespace-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

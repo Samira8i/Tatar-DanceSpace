@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="error-section">
+    <div class="container" style="text-align: center; padding: 4rem 2rem;">
+
+        <!-- Картинка мишки (500.png) -->
+        <img th:src="@{/images/error/500.png}"
+             alt="Ошибка сервера"
+             style="max-width: 250px; width: 100%; margin-bottom: 2rem;"
+             th:onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.35em%22%20font-size%3D%2250%22%3E🧸%3C%2Ftext%3E%3C%2Fsvg%3E'">
+
+        <h1 style="font-size: 6rem; color: var(--sapphire); margin: 0;">500</h1>
+        <h2 style="color: var(--gray-700); margin-top: 0.5rem;">Что-то пошло не так</h2>
+
+        <p style="color: var(--gray-500); max-width: 400px; margin: 1rem auto;">
+            На сервере произошла ошибка. Мы уже работаем над её исправлением.
+        </p>
+        <p th:if="${errorMessage}" style="color: var(--gray-400); font-size: 0.75rem; margin-top: 0.5rem;">
+            Код ошибки: <span th:text="${statusCode}">500</span>
+        </p>
+
+        <div style="margin-top: 2rem;">
+            <a th:href="@{/}" class="btn btn-primary">🏠 На главную</a>
+            <button onclick="location.reload()" class="btn btn-outline" style="margin-left: 1rem;">🔄 Обновить</button>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<style>
+    .error-section {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+</body>
+</html>

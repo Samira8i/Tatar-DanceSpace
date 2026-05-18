@@ -1,0 +1,95 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5435/dancespace
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+      cache-null-values: false
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/master.yaml
+
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+  # ========== НАСТРОЙКИ ДЛЯ ОБРАБОТКИ ОШИБОК ==========
+  mvc:
+    throw-exception-if-no-handler-found: true
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  web:
+    resources:
+      add-mappings: false  # ← МЕНЯЕМ НА false (теперь статика через MvcConfig)
+      # static-locations убираем, так как добавили в MvcConfig
+
+# ========== НАСТРОЙКИ СЕРВЕРА ==========
+server:
+  port: 8080
+  servlet:
+    context-path: /tatardancespace
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        secure: false
+        same-site: lax
+        name: TATARDANCESESSIONID
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
+
+# ========== ВНЕШНИЕ API ==========
+news:
+  api:
+    key: ${NEWS_API_KEY:}
+    url: https://newsapi.org/v2/everything
+
+# ========== OAuth ==========
+oauth:
+  yandex:
+    client-id: ${CLIENT_ID:}
+    client-secret: ${CLIENT_SECRET:}
+    redirect-uri: http://localhost:8080/tatardancespace/login/oauth2/code/yandex
+
+# ========== ЛОГИРОВАНИЕ ==========
+logging:
+  level:
+    com.tatardancespace: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.boot.web.servlet.error: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+  file:
+    name: logs/tatardancespace.log
+    max-size: 10MB
+    max-history: 7

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Залы на модерации</h2>
+
+        <a th:href="@{/admin}" class="btn btn-outline" style="margin-bottom: 1rem;">← Назад</a>
+
+        <div class="grid grid-2">
+            <div th:each="hall : ${halls}" class="card">
+                <div class="card-content">
+                    <h3 th:text="${hall.name}">Название</h3>
+                    <p><strong>Адрес:</strong> <span th:text="${hall.address}"></span></p>
+                    <p><strong>Цена:</strong> <span th:text="${hall.price} + ' ₽/час'"></span></p>
+                    <p><strong>Владелец:</strong> <span th:text="${hall.owner.username}"></span></p>
+                    <p><strong>Описание:</strong> <span th:text="${hall.description}"></span></p>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <form th:action="@{/admin/halls/{id}/approve(id=${hall.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-primary">✅ Одобрить</button>
+                        </form>
+                        <form th:action="@{/admin/halls/{id}/reject(id=${hall.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="return confirm('Удалить зал?')">❌ Отклонить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${halls.empty}" class="text-center" style="padding: 4rem;">
+            <p>Нет залов на модерации</p>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
