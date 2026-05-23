@@ -23,7 +23,7 @@
 
                     <div style="display: flex; gap: 1rem; margin-top: 1rem;">
                         <form th:action="@{/admin/events/{id}/approve(id=${event.id})}" method="post" style="display: inline;">
-                            <button type="submit" class="btn btn-primary">✅ Одобрить</button>
+                            <button type="submit" class="btn btn-primary"> Одобрить</button>
                         </form>
                         <form th:action="@{/admin/events/{id}/reject(id=${event.id})}" method="post" style="display: inline;">
                             <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="return confirm('Удалить событие?')">❌ Отклонить</button>

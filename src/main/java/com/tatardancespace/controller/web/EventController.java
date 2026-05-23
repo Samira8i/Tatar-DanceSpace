@@ -1,6 +1,7 @@
 package com.tatardancespace.controller.web;
 
 import com.tatardancespace.dto.request.EventRequest;
+import com.tatardancespace.entity.Event;
 import com.tatardancespace.entity.Status;
 import com.tatardancespace.service.CustomUserDetails;
 import com.tatardancespace.service.EventService;
@@ -25,14 +26,36 @@ public class EventController {
     }
 
     @GetMapping
-    public String listEvents(Model model) {
-        model.addAttribute("events", eventService.getApprovedEvents());
+    public String listEvents(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        boolean isAdmin = userDetails != null && userDetails.getUser().getRole().name().equals("ADMIN");
+
+        if (isAdmin) {
+            model.addAttribute("events", eventService.getAllEvents());
+            model.addAttribute("showAdminFilters", true);
+        } else {
+            model.addAttribute("events", eventService.getApprovedEvents());
+            model.addAttribute("showAdminFilters", false);
+        }
+
+        model.addAttribute("isAdmin", isAdmin);
         return "events/list";
     }
 
     @GetMapping("/{id}")
-    public String eventDetails(@PathVariable Long id, Model model) {
-        model.addAttribute("event", eventService.getEventById(id));
+    public String eventDetails(@PathVariable Long id,
+                               @AuthenticationPrincipal CustomUserDetails userDetails,
+                               Model model) {
+        var event = eventService.getEventById(id);
+        model.addAttribute("event", event);
+
+        if (userDetails != null) {
+            model.addAttribute("isOwner", event.getOrganizer().getId().equals(userDetails.getId()));
+            model.addAttribute("isAdmin", userDetails.getUser().getRole().name().equals("ADMIN"));
+        } else {
+            model.addAttribute("isOwner", false);
+            model.addAttribute("isAdmin", false);
+        }
+
         return "events/details";
     }
 
@@ -69,8 +92,18 @@ public class EventController {
             return "redirect:/events?error=access_denied";
         }
 
-        model.addAttribute("event", eventService.getEventById(id));
-        model.addAttribute("eventRequest", new EventRequest());
+        Event event = eventService.getEventById(id);
+        model.addAttribute("event", event);
+
+        EventRequest request = new EventRequest();
+        request.setTitle(event.getTitle());
+        request.setDateTime(event.getDateTime());
+        request.setStyle(event.getStyle());
+        request.setPlace(event.getPlace());
+        request.setDescription(event.getDescription());
+        request.setImageUrl(event.getImageUrl());
+
+        model.addAttribute("eventRequest", request);
         return "events/edit";
     }
 
@@ -103,10 +136,18 @@ public class EventController {
     }
 
     @GetMapping("/status/{status}")
-    public String filterByStatus(@PathVariable Status status, Model model) {
+    public String filterByStatus(@PathVariable Status status,
+                                 @AuthenticationPrincipal CustomUserDetails userDetails,
+                                 Model model) {
+        if (userDetails == null || !userDetails.getUser().getRole().name().equals("ADMIN")) {
+            return "redirect:/events?error=access_denied";
+        }
+
         model.addAttribute("events", eventService.getEventsByStatus(status));
         model.addAttribute("currentStatus", status);
         model.addAttribute("title", "События - " + status);
+        model.addAttribute("isAdmin", true);
+        model.addAttribute("showAdminFilters", true);
         return "events/list";
     }
 }

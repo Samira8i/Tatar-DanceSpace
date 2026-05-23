@@ -9,46 +9,51 @@
     <div class="container">
         <h2 class="section-title" th:text="${title != null ? title : 'Танцевальные залы'}">Танцевальные залы</h2>
 
-        <!-- Блок фильтрации по статусу -->
-        <div class="filter-bar" style="display: flex; gap: 1rem; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;">
+        <div th:if="${showAdminFilters}" class="filter-bar" style="display: flex; gap: 1rem; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;">
             <div style="display: flex; gap: 0.5rem;">
                 <a th:href="@{/halls/status/APPROVED}" class="btn" th:classappend="${currentStatus?.name() == 'APPROVED'} ? 'btn-primary' : 'btn-outline'">
-                    ✅ Одобренные
+                    Одобренные
                 </a>
                 <a th:href="@{/halls/status/PENDING}" class="btn" th:classappend="${currentStatus?.name() == 'PENDING'} ? 'btn-primary' : 'btn-outline'">
-                    ⏳ На модерации
+                    На модерации
                 </a>
                 <a th:href="@{/halls}" class="btn btn-outline">
-                    📋 Все залы
+                    Все залы
                 </a>
             </div>
 
             <a th:href="@{/halls/add}" class="btn btn-primary">+ Добавить зал</a>
         </div>
 
-        <!-- Сообщение если нет залов -->
+        <div th:unless="${showAdminFilters}" style="display: flex; justify-content: flex-end; margin-bottom: 2rem;">
+            <a th:href="@{/halls/add}" class="btn btn-primary">+ Добавить зал</a>
+        </div>
+
+
         <div th:if="${halls.empty}" class="text-center" style="padding: 4rem;">
-            <p th:if="${currentStatus?.name() == 'APPROVED'}">✅ Нет одобренных залов</p>
-            <p th:if="${currentStatus?.name() == 'PENDING'}">⏳ Нет залов на модерации</p>
+            <p th:if="${currentStatus?.name() == 'APPROVED'}"> Нет одобренных залов</p>
+            <p th:if="${currentStatus?.name() == 'PENDING'}"> Нет залов на модерации</p>
             <p th:unless="${currentStatus}">🏛️ Пока нет залов. Будьте первым!</p>
             <a th:href="@{/halls/add}" class="btn btn-primary" style="margin-top: 1rem;">Добавить зал</a>
         </div>
 
-        <!-- Сетка с залами -->
         <div class="grid grid-3" th:unless="${halls.empty}">
             <div th:each="hall : ${halls}" class="card fade-up">
-                <div class="card-image" style="background: var(--peach-dark); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
-                    🏛️
+                <div class="card-image" style="height: 180px; overflow: hidden;">
+                    <div th:if="${hall.imageUrl}" th:style="'background-image: url(' + ${hall.imageUrl} + '); background-size: cover; background-position: center; width: 100%; height: 100%;'"></div>
+                    <div th:unless="${hall.imageUrl}" style="font-size: 3rem; display: flex; align-items: center; justify-content: center; height: 100%; background: var(--peach-dark);">🏛️</div>
                 </div>
                 <div class="card-content">
                     <h3 class="card-title" th:text="${hall.name}">Название зала</h3>
                     <p class="card-text" th:text="${hall.address}">Адрес</p>
                     <p class="card-text" style="color: var(--sapphire); font-weight: 600;" th:text="${hall.price} + ' ₽/час'">Цена</p>
-                    <p class="card-text">
-                        Статус:
-                        <span th:if="${hall.status.name() == 'APPROVED'}" style="color: #7A8450;">✅ Одобрен</span>
-                        <span th:if="${hall.status.name() == 'PENDING'}" style="color: orange;">⏳ На модерации</span>
-                    </p>
+                    <div th:if="${showAdminFilters}">
+                        <p class="card-text">
+                            Статус:
+                            <span th:if="${hall.status.name() == 'APPROVED'}" style="color: #7A8450;">Одобрен</span>
+                            <span th:if="${hall.status.name() == 'PENDING'}" style="color: orange;">На модерации</span>
+                        </p>
+                    </div>
                     <div style="margin-top: 1rem;">
                         <a th:href="@{/halls/{id}(id=${hall.id})}" class="btn btn-outline" style="width: 100%; text-align: center;">Подробнее</a>
                     </div>

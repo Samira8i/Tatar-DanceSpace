@@ -16,6 +16,8 @@ public interface DanceHallRepository extends JpaRepository<DanceHall, Long> {
 
     List<DanceHall> findByStatus(Status status);
 
+    List<DanceHall> findAllByOrderByIdDesc();
+
     @Query("SELECT h FROM DanceHall h WHERE h.status = 'APPROVED' AND " +
             "(SELECT AVG(r.rating) FROM Review r WHERE r.hall = h) >= 4.0")
     List<DanceHall> findTopRatedHalls();

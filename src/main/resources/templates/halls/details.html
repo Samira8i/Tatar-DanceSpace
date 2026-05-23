@@ -7,92 +7,83 @@
 
 <section class="section">
     <div class="container">
-        <div style="max-width: 800px; margin: 0 auto;">
+        <div class="hall-detail-container">
             <div class="card">
-                <div class="card-image" style="height: 300px;">
-                    <div th:if="${hall.imageUrl}" th:style="'background-image: url(' + ${hall.imageUrl} + '); background-size: cover; background-position: center; width: 100%; height: 100%;'"></div>
-                    <div th:unless="${hall.imageUrl}" style="font-size: 5rem; display: flex; align-items: center; justify-content: center; height: 100%;">🏛️</div>
+                <div class="card-image hall-detail-image">
+                    <div th:if="${hall.imageUrl}" th:style="'background-image: url(' + ${hall.imageUrl} + ');'"></div>
+                    <div th:unless="${hall.imageUrl}" class="hall-detail-placeholder">🏛️</div>
                 </div>
                 <div class="card-content">
-                    <h1 th:text="${hall.name}" style="color: var(--sapphire);">Название зала</h1>
+                    <h1 th:text="${hall.name}">Название зала</h1>
 
-                    <div style="margin: 1rem 0; padding: 1rem; background: var(--peach-light); border-radius: var(--radius-md);">
-                        <p><strong>📍 Адрес:</strong> <span th:text="${hall.address}"></span></p>
-                        <p><strong>💰 Цена:</strong> <span th:text="${hall.price} + ' ₽/час'"></span></p>
-                        <p><strong>👤 Владелец:</strong> <span th:text="${hall.owner.username}"></span></p>
-                        <p><strong>✅ Статус:</strong>
-                            <span th:if="${hall.status.name() == 'APPROVED'}" style="color: #7A8450;">Одобрен</span>
-                            <span th:if="${hall.status.name() == 'PENDING'}" style="color: orange;">На модерации</span>
+                    <div class="hall-info-block">
+                        <p><strong>Адрес:</strong> <span th:text="${hall.address}"></span></p>
+                        <p><strong>Цена:</strong> <span th:text="${hall.price} + ' ₽/час'"></span></p>
+                        <p><strong>Владелец:</strong> <span th:text="${hall.owner.username}"></span></p>
+                        <p><strong>Статус:</strong>
+                            <span th:if="${hall.status.name() == 'APPROVED'}" class="status-approved">Одобрен</span>
+                            <span th:if="${hall.status.name() == 'PENDING'}" class="status-pending">На модерации</span>
                         </p>
-                        <p><strong>📅 Добавлен:</strong> <span th:text="${#temporals.format(hall.createdAt, 'dd.MM.yyyy')}"></span></p>
+                        <p><strong>Добавлен:</strong> <span th:text="${#temporals.format(hall.createdAt, 'dd.MM.yyyy')}"></span></p>
                     </div>
 
                     <h3>Описание</h3>
-                    <p th:text="${hall.description}" style="line-height: 1.6;">Описание зала</p>
+                    <p th:text="${hall.description}">Описание зала</p>
 
-                    <!-- Отзывы и рейтинг -->
-                    <div style="display: flex; align-items: center; gap: 2rem; margin: 2rem 0; padding: 1rem 0; border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200);">
-                        <div>
-                            ⭐ Рейтинг: <span class="avg-rating">0</span> / 5
-                        </div>
-                        <div>
-                            📝 Отзывов: <span class="reviews-count">0</span>
-                        </div>
+                    <div class="hall-stats-bar">
+                        <div>⭐ Рейтинг: <span class="avg-rating">0</span> / 5</div>
+                        <div>Отзывов: <span class="reviews-count">0</span></div>
                     </div>
 
                     <div id="reviews-section">
                         <h3>Отзывы (<span class="reviews-count-display">0</span>)</h3>
                         <div id="reviews-list">
-                            <div th:each="review : ${reviews}" class="review" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-200);">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div th:each="review : ${reviews}" class="review" th:data-review-id="${review.id}">
+                                <div class="review-header">
                                     <div>
                                         <strong th:text="${review.user.username}"></strong>
-                                        <span class="stars" style="color: #f5a623; margin-left: 0.5rem;">
-                                            <span th:each="i, iterStat : ${#numbers.sequence(1, review.rating)}">★</span>
+                                        <span class="stars">
+                                            <span th:each="i : ${#numbers.sequence(1, review.rating)}">★</span>
                                             <span th:each="i : ${#numbers.sequence(1, 5 - review.rating)}">☆</span>
                                         </span>
                                     </div>
-                                    <span style="color: var(--gray-500); font-size: 0.75rem;" th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                                    <div>
+                                        <span class="review-date" th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                                        <button class="delete-review-btn"
+                                                th:data-review-id="${review.id}"
+                                                th:if="${#authorization.expression('isAuthenticated()') and (review.user.username == #authentication.name or #authorization.expression('hasRole(''ADMIN'')'))}">
+                                            Удалить
+                                        </button>
+                                    </div>
                                 </div>
-                                <p th:text="${review.text}" style="margin-top: 0.25rem;"></p>
+                                <p th:text="${review.text}"></p>
                             </div>
                         </div>
 
-                        <div th:if="${#authorization.expression('isAuthenticated()')}">
-                            <div style="margin-top: 1rem;">
-                                <select id="review-rating" class="form-control" style="width: auto; display: inline-block; margin-right: 1rem;">
-                                    <option value="5">★★★★★ (5)</option>
-                                    <option value="4">★★★★☆ (4)</option>
-                                    <option value="3">★★★☆☆ (3)</option>
-                                    <option value="2">★★☆☆☆ (2)</option>
-                                    <option value="1">★☆☆☆☆ (1)</option>
-                                </select>
-                                <textarea id="review-text" class="form-control" rows="3" placeholder="Ваш отзыв (необязательно)..."></textarea>
-                                <button id="submit-review" class="btn btn-primary" style="margin-top: 0.5rem;">Отправить отзыв</button>
-                            </div>
+                        <div th:if="${#authorization.expression('isAuthenticated()') and not hasReviewed}" class="add-review-form">
+                            <select id="review-rating" class="form-control">
+                                <option value="5">★★★★★ (5)</option>
+                                <option value="4">★★★★☆ (4)</option>
+                                <option value="3">★★★☆☆ (3)</option>
+                                <option value="2">★★☆☆☆ (2)</option>
+                                <option value="1">★☆☆☆☆ (1)</option>
+                            </select>
+                            <textarea id="review-text" class="form-control" rows="3" placeholder="Ваш отзыв (необязательно)..."></textarea>
+                            <button id="submit-review" class="btn btn-primary">Отправить отзыв</button>
                         </div>
-                        <div th:unless="${#authorization.expression('isAuthenticated()')}" class="text-center" style="margin-top: 1rem;">
+                        <div th:if="${hasReviewed}" class="already-reviewed">Вы уже оставили отзыв на этот зал</div>
+                        <div th:unless="${#authorization.expression('isAuthenticated()')}" class="login-prompt">
                             <a th:href="@{/login}">Войдите</a>, чтобы оставить отзыв
                         </div>
                     </div>
 
-                    <!-- Кнопки действий (как в событиях) -->
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a th:href="@{/halls}" class="btn btn-outline">← Назад</a>
-
-                        <div th:if="${#authorization.expression('isAuthenticated()')}">
-                            <div th:if="${hall.owner.username == #authentication.name}">
-                                <a th:href="@{/halls/{id}/edit(id=${hall.id})}" class="btn btn-primary">Редактировать</a>
-                                <form th:action="@{/halls/{id}/delete(id=${hall.id})}" method="post" style="display: inline;">
-                                    <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="return confirm('Удалить этот зал?')">Удалить</button>
-                                </form>
-                            </div>
-                            <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                                <a th:href="@{/halls/{id}/edit(id=${hall.id})}" class="btn btn-primary">Редактировать</a>
-                                <form th:action="@{/halls/{id}/delete(id=${hall.id})}" method="post" style="display: inline;">
-                                    <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="return confirm('Удалить этот зал?')">Удалить</button>
-                                </form>
-                            </div>
+                    <div class="hall-actions-footer">
+                        <a th:href="@{/halls}" class="btn btn-outline">Назад</a>
+                        <div th:if="${#authorization.expression('isAuthenticated()') and (isOwner or isAdmin)}" class="hall-edit-actions">
+                            <a th:href="@{/halls/{id}/edit(id=${hall.id})}" class="btn btn-primary">Редактировать</a>
+                            <form th:action="@{/halls/{id}/delete(id=${hall.id})}" method="post">
+                                <button type="submit" class="btn btn-outline btn-danger" onclick="return confirm('Удалить этот зал?')">Удалить</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -105,53 +96,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    const hallId = /*[[${hall.id}]]*/ null;
-    /*]]>*/
-
-    console.log("Hall ID:", hallId);
-
-    function updateHallStats() {
-        fetch('/tatardancespace/api/halls/' + hallId + '/stats')
-            .then(res => res.json())
-            .then(data => {
-                $('.avg-rating').text(data.averageRating);
-                $('.reviews-count, .reviews-count-display').text(data.reviewsCount);
-            });
-    }
-
-    $('#submit-review').on('click', function() {
-        const rating = $('#review-rating').val();
-        const text = $('#review-text').val();
-
-        if (!rating) return;
-
-        fetch('/tatardancespace/api/halls/' + hallId + '/review?rating=' + rating + '&text=' + encodeURIComponent(text), { method: 'POST' })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const stars = '★'.repeat(data.rating) + '☆'.repeat(5 - data.rating);
-                    const newReview = `
-                        <div class="review" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-200);">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <strong>${data.author}</strong>
-                                    <span class="stars" style="color: #f5a623; margin-left: 0.5rem;">${stars}</span>
-                                </div>
-                                <span style="color: var(--gray-500); font-size: 0.75rem;">${data.createdAt}</span>
-                            </div>
-                            <p style="margin-top: 0.25rem;">${data.text || ''}</p>
-                        </div>
-                    `;
-                    $('#reviews-list').prepend(newReview);
-                    $('#review-text').val('');
-                    updateHallStats();
-                }
-            });
-    });
-
-    updateHallStats();
+    window.hallId = /*[[${hall.id}]]*/ null;
 </script>
+<script th:src="@{/js/halls-detail.js}"></script>
 
 </body>
 </html>

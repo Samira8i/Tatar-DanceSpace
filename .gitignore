@@ -1,9 +1,30 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# ========== JAVA ==========
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.log.gz
+*.pid
 
+# ========== MAVEN ==========
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ========== GRADLE ==========
+.gradle/
+build/
+!gradle-wrapper.jar
+
+# ========== IDE ==========
 ### STS ###
 .apt_generated
 .classpath
@@ -14,10 +35,11 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
 
 ### NetBeans ###
 /nbproject/private/
@@ -25,9 +47,64 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
+*.code-workspace
+
+# ========== SPRING BOOT ==========
+spring-boot-devtools.log
+application-local.yml
+application-secret.yml
+
+# ========== ЛОГИ ==========
+logs/
+*.log
+*.log.gz
+
+# ========== ТЕМПОРАЛЬНЫЕ ФАЙЛЫ ==========
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ========== DOCKER ==========
+*.pid
+docker-compose.override.yml
+.dockerignore
+redis-data/
+postgres-data/
+*.rdb
+*.aof
+
+# ========== СЕССИИ (если в файлах) ==========
+sessions/
+
+# ========== СЕКРЕТЫ ==========
+.env
+.env.local
+.env.production
+*.key
+*.pem
+*.crt
+*.p12
+
+# ========== СБОРКА ==========
+*.zip
+*.tar.gz
+*.tgz
+
+# ========== ТЕСТЫ ==========
+test-output/
+*.json.tmp
+
+# ========== ОТЧЁТЫ ==========
+*.html.tmp!/mvnw.cmd

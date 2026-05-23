@@ -44,17 +44,13 @@ public class AdminController {
 
     @PostMapping("/halls/{id}/approve")
     public String approveHall(@PathVariable Long id) {
-        System.out.println("=== APPROVE HALL CALLED, ID: " + id);
         danceHallService.approveHall(id);
-        System.out.println("=== HALL APPROVED");
         return "redirect:/admin/halls/pending";
     }
 
     @PostMapping("/halls/{id}/reject")
     public String rejectHall(@PathVariable Long id) {
-        System.out.println("=== REJECT HALL CALLED, ID: " + id);
         danceHallService.rejectHall(id);
-        System.out.println("=== HALL REJECTED");
         return "redirect:/admin/halls/pending";
     }
 

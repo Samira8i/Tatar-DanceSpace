@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
-//todo: спросить у анатолика как хранить картинки
+
+
 public class EventRequest {
 
     @NotBlank(message = "Название обязательно")

@@ -1,23 +1,16 @@
 package com.tatardancespace.dto.response;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Новость о танцах")
 public class NewsResponse {
 
-    @Schema(description = "Заголовок новости")
     private String title;
 
-    @Schema(description = "Краткое описание")
     private String description;
 
-    @Schema(description = "Ссылка на полную статью")
     private String url;
 
-    @Schema(description = "Ссылка на изображение")
     private String imageUrl;
 
-    @Schema(description = "Дата публикации")
     private String publishedAt;
 
     public NewsResponse() {}

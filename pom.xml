@@ -47,14 +47,11 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!-- Liquibase - версия берется из Spring Boot Parent -->
+        <!-- Liquibase -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
         </dependency>
-
-        <!-- НЕ НУЖНО добавлять spring-boot-starter-liquibase,
-             достаточно liquibase-core, он уже включает всё необходимое -->
 
         <!-- Thymeleaf + Security -->
         <dependency>

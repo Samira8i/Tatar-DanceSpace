@@ -35,7 +35,7 @@ public class AuthController {
                            BindingResult bindingResult,
                            Model model) {
         if (bindingResult.hasErrors()) {
-            return "register"; //todo:  форму с ошибками вернуть надо
+            return "register";
         }
 
         try {

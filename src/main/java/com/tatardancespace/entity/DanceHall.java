@@ -2,13 +2,18 @@ package com.tatardancespace.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "dance_halls")
-public class DanceHall {
+public class DanceHall implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,4 +72,23 @@ public class DanceHall {
 
     public List<Review> getReviews() { return reviews; }
     public void setReviews(List<Review> reviews) { this.reviews = reviews; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DanceHall that = (DanceHall) o;
+
+        if (id == null && that.id == null) {
+            return Objects.equals(name, that.name) && Objects.equals(address, that.address);
+        }
+
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        if (id != null) return id.hashCode();
+        return Objects.hash(name, address);
+    }
 }

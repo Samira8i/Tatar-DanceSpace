@@ -123,4 +123,8 @@ public class EventService {
         Event event = getEventById(eventId);
         return event.getOrganizer().getId().equals(user.getId()) || user.getRole().name().equals("ADMIN");
     }
+    public List<Event> getAllEvents() {
+        log.debug("Fetching ALL events for admin");
+        return eventRepository.findAllByOrderByIdDesc();
+    }
 }

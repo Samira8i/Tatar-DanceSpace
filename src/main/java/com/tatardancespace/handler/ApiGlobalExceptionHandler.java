@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-@RestControllerAdvice(basePackages = "com.tatardancespace.controller.api")  // ← ТОЛЬКО API КОНТРОЛЛЕРЫ!
+@RestControllerAdvice(basePackages = "com.tatardancespace.controller.api")
 @Order(1)
 public class ApiGlobalExceptionHandler {
 

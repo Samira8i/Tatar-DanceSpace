@@ -1,4 +1,3 @@
-/* ========== НАВИГАЦИЯ ========== */
 .navbar {
     position: fixed;
     top: 0;
@@ -24,12 +23,57 @@
     font-weight: 700;
     letter-spacing: -0.02em;
     color: var(--sapphire);
+    text-decoration: none;
+    z-index: 1001;
 }
 
+/* Бургер-меню */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--sapphire);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.menu-toggle.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Десктопное меню */
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xl);
+    gap: 2rem;
+}
+
+.nav-menu .nav-links,
+.nav-menu .nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 .nav-link {
@@ -39,13 +83,65 @@
     letter-spacing: 0.02em;
     opacity: 0.8;
     transition: opacity 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
 }
 
 .nav-link:hover {
     opacity: 1;
 }
 
-/* ========== КНОПКИ ========== */
+/* Мобильная версия */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+    body.menu-open {
+        overflow: hidden;
+    }
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 320px;
+        height: 100vh;
+        background: var(--peach);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 1rem;
+        transition: right 0.3s ease;
+        box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        padding: 5rem 2rem 2rem;
+        margin: 0;
+    }
+    .nav-menu.active {
+        right: 0;
+    }
+    .nav-menu .nav-links,
+    .nav-menu .nav-auth {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        width: 100%;
+    }
+    .nav-link {
+        font-size: 1.1rem;
+        padding: 0.75rem 0;
+        display: block;
+        text-align: center;
+        white-space: normal;
+    }
+    .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        margin: 0;
+    }
+}
+
 .btn {
     display: inline-flex;
     align-items: center;
@@ -59,6 +155,7 @@
     border: none;
     gap: var(--spacing-sm);
     letter-spacing: 0.01em;
+    text-decoration: none;
 }
 
 .btn-primary {
@@ -87,7 +184,6 @@
     font-size: 1rem;
 }
 
-/* ========== ГЕРОЙ СЕКЦИЯ ========== */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -112,24 +208,79 @@
 .hero-content {
     position: relative;
     z-index: 1;
+    padding: 0 var(--spacing-md);
 }
 
 .hero h1 {
     margin-bottom: var(--spacing-md);
     color: var(--sapphire);
+    font-size: clamp(2rem, 8vw, 4rem);
 }
 
 .hero p {
-    font-size: 1.125rem;
+    font-size: clamp(0.875rem, 4vw, 1.125rem);
     margin-bottom: var(--spacing-xl);
     color: var(--sapphire);
     opacity: 0.8;
 }
 
-/* ========== СТАТИСТИКА ========== */
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-image {
+    height: 200px;
+    background: var(--peach-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.card-content {
+    padding: var(--spacing-lg);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--sapphire);
+}
+
+.card-text {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+
+.card-icon {
+    font-size: 3rem;
+    text-align: center;
+    padding: 1.5rem 1rem 0.5rem;
+}
+
+.card-icon.large {
+    font-size: 3rem;
+    padding: 2rem;
+    background: var(--peach-light);
+}
+
+.stats-section {
+    background: var(--peach-light);
+}
+
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: var(--spacing-xl);
     text-align: center;
     padding: var(--spacing-xl);
@@ -139,7 +290,7 @@
 }
 
 .stat-number {
-    font-size: 3rem;
+    font-size: clamp(1.5rem, 5vw, 3rem);
     font-weight: 700;
     color: var(--sapphire);
     margin-bottom: var(--spacing-xs);
@@ -151,7 +302,289 @@
     letter-spacing: 0.02em;
 }
 
-/* ========== ФОРМЫ ========== */
+/* ========== СЕКЦИЯ ТОП-ЗАЛОВ ========== */
+.top-halls-section {
+    background: linear-gradient(135deg, var(--white) 0%, var(--peach-light) 100%);
+    padding: 2rem 0;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.section-header .section-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-header .section-title::after {
+    display: none;
+}
+
+.section-subtitle {
+    color: var(--gray-500);
+    font-size: 0.9rem;
+}
+
+/* Сетка топ-залов */
+.halls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.hall-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.hall-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.hall-card-image {
+    height: 160px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    background-color: var(--peach-dark);
+}
+
+.hall-card-icon {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background-color: var(--peach-dark);
+}
+
+.rating-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    color: #ffc107;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.hall-card-body {
+    padding: 1rem;
+}
+
+.hall-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hall-card-address {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-bottom: 0.5rem;
+}
+
+.hall-card-price {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--sapphire);
+    margin-bottom: 0.75rem;
+}
+
+.hall-card-btn {
+    display: block;
+    text-align: center;
+    padding: 8px 12px;
+    background: var(--sapphire);
+    color: var(--white);
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    transition: background 0.2s ease;
+}
+
+.hall-card-btn:hover {
+    background: var(--sapphire-light);
+    color: var(--white);
+}
+
+/* ========== НОВОСТИ ========== */
+.news-section {
+    background: var(--white);
+    padding: 2rem 0;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.news-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+}
+
+.news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.news-card-image {
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--peach-dark);
+}
+
+.news-card-icon {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background-color: var(--peach-light);
+}
+
+.news-card-body {
+    padding: 1rem;
+}
+
+.news-date {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--gray-500);
+    margin-bottom: 0.5rem;
+}
+
+.news-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.news-description {
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.news-link {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: var(--sapphire);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.news-link:hover {
+    text-decoration: underline;
+}
+
+/* ========== СТАТИСТИКА ========== */
+.stats-section {
+    background: var(--peach-light);
+    padding: 2rem 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+
+.stat-item {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--sapphire);
+}
+
+.stat-label {
+    color: var(--gray-500);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* ========== КНОПКИ ========== */
+.btn {
+    display: inline-block;
+    padding: 10px 24px;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--sapphire);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--sapphire-light);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--sapphire);
+    color: var(--sapphire);
+}
+
+.btn-outline:hover {
+    background: rgba(5, 31, 69, 0.05);
+}
+
+/* ========== АДАПТАЦИЯ ========== */
+@media (max-width: 768px) {
+    .halls-grid {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+    }
+
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .section-header .section-title {
+        font-size: 1.5rem;
+    }
+}
 .form-group {
     margin-bottom: var(--spacing-lg);
 }
@@ -186,17 +619,6 @@
     color: var(--gray-400);
 }
 
-.form-control.error {
-    border-color: #dc3545;
-}
-
-.error-message {
-    color: #dc3545;
-    font-size: 0.75rem;
-    margin-top: var(--spacing-xs);
-}
-
-/* ========== ФУТЕР ========== */
 .footer {
     background: var(--white);
     border-top: 1px solid var(--gray-200);
@@ -206,7 +628,7 @@
 
 .footer-content {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--spacing-xl);
     margin-bottom: var(--spacing-xl);
 }
@@ -226,6 +648,7 @@
     display: block;
     margin-bottom: var(--spacing-sm);
     transition: color 0.2s ease;
+    text-decoration: none;
 }
 
 .footer-section a:hover {
@@ -240,48 +663,6 @@
     color: var(--gray-400);
 }
 
-@media (max-width: 768px) {
-    .footer-content {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
-    }
-}
-
-/* ========== БЕЙДЖИ ========== */
-.badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-}
-
-.badge-pending {
-    background: rgba(255, 193, 7, 0.15);
-    color: #856404;
-    border: 1px solid rgba(255, 193, 7, 0.3);
-}
-
-.badge-approved {
-    background: rgba(5, 31, 69, 0.1);
-    color: var(--sapphire);
-    border: 1px solid rgba(5, 31, 69, 0.2);
-}
-/* Карточки с иконками */
-.card-icon {
-    font-size: 3rem;
-    text-align: center;
-    padding: 1.5rem 1rem 0.5rem;
-}
-
-.card-icon.large {
-    font-size: 3rem;
-    padding: 2rem;
-    background: var(--peach-light);
-}
-
-/* Новости */
 .news-section {
     background: var(--white);
 }
@@ -298,8 +679,236 @@
     width: 100%;
     text-align: center;
 }
+/* Event detail page */
+.event-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
 
-/* Статистика */
-.stats-section {
+.event-detail-image {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+}
+
+.event-detail-placeholder {
+    height: 300px;
+    font-size: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--peach-dark);
+}
+
+.event-info-block {
+    margin: 1rem 0;
+    padding: 1rem;
     background: var(--peach-light);
+    border-radius: var(--radius-md);
+}
+
+.event-info-block p {
+    margin: 0.25rem 0;
+}
+
+.event-actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.event-actions-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.event-actions-footer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.event-edit-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Comment */
+.comment {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.comment-date {
+    color: var(--gray-500);
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+.delete-comment-btn,
+.delete-review-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.delete-comment-btn:hover,
+.delete-review-btn:hover {
+    text-decoration: underline;
+}
+
+.add-comment-form {
+    margin-top: 1rem;
+}
+
+.login-prompt {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* Hall detail page */
+.hall-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hall-detail-image {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+}
+
+.hall-detail-placeholder {
+    height: 300px;
+    font-size: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--peach-dark);
+}
+
+.hall-info-block {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--peach-light);
+    border-radius: var(--radius-md);
+}
+
+.hall-stats-bar {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.hall-actions-footer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.hall-edit-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Review */
+.review {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.review-date {
+    color: var(--gray-500);
+    font-size: 0.75rem;
+    margin-right: 0.5rem;
+}
+
+.stars {
+    color: #f5a623;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-left: 0.5rem;
+}
+
+.add-review-form {
+    margin-top: 1rem;
+}
+
+.already-reviewed {
+    text-align: center;
+    margin-top: 1rem;
+    color: #7A8450;
+}
+
+/* Status badges */
+.status-approved {
+    color: #7A8450;
+}
+
+.status-pending {
+    color: orange;
+}
+
+/* Danger button */
+.btn-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-danger:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: var(--gray-600);
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: var(--sapphire);
+}
+
+.tab-btn.active {
+    color: var(--sapphire);
+    border-bottom: 2px solid var(--sapphire);
+    margin-bottom: -2px;
+}
+
+.tab-content {
+    padding: 1rem 0;
 }

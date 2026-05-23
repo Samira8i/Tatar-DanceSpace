@@ -30,10 +30,10 @@ public class SecurityConfig {
         http
                 .userDetailsService(customUserDetailsService)
                 .sessionManagement(session -> session
-                        .sessionFixation().migrateSession()
+                        .sessionFixation().migrateSession() //защита от фиксации сессии
                         .invalidSessionUrl("/login?expired")
                         .maximumSessions(1)
-                        .maxSessionsPreventsLogin(false)
+                        .maxSessionsPreventsLogin(false) // из-за второй сессии первая недействительна становится
                         .expiredUrl("/login?expired")
                 )
                 .authorizeHttpRequests(auth -> auth

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head th:replace="~{fragments/header :: head}"></head>
 <body>
 
@@ -7,79 +7,78 @@
 
 <section class="section">
     <div class="container">
-        <div style="max-width: 800px; margin: 0 auto;">
+        <div class="event-detail-container">
             <div class="card">
-                <div class="card-image" style="height: 300px;">
-                    <div th:if="${event.imageUrl}" th:style="'background-image: url(' + ${event.imageUrl} + '); background-size: cover; background-position: center; width: 100%; height: 100%;'"></div>
-                    <div th:unless="${event.imageUrl}" style="font-size: 5rem; display: flex; align-items: center; justify-content: center; height: 100%;">🎭</div>
+                <div class="card-image event-detail-image">
+                    <div th:if="${event.imageUrl}" th:style="'background-image: url(' + ${event.imageUrl} + ');'"></div>
+                    <div th:unless="${event.imageUrl}" class="event-detail-placeholder">🎭</div>
                 </div>
                 <div class="card-content">
-                    <h1 th:text="${event.title}" style="color: var(--sapphire);">Название</h1>
+                    <h1 th:text="${event.title}">Название</h1>
 
-                    <div style="margin: 1rem 0; padding: 1rem; background: var(--peach-light); border-radius: var(--radius-md);">
-                        <p><strong>📅 Дата:</strong> <span th:text="${#temporals.format(event.dateTime, 'dd.MM.yyyy HH:mm')}"></span></p>
-                        <p><strong>📍 Место:</strong> <span th:text="${event.place}"></span></p>
-                        <p><strong>💃 Стиль:</strong> <span th:text="${event.style}"></span></p>
-                        <p><strong>👤 Организатор:</strong> <span th:text="${event.organizer.username}"></span></p>
-                        <p><strong>✅ Статус:</strong>
-                            <span th:if="${event.status.name() == 'APPROVED'}" style="color: #7A8450;">Одобрено</span>
-                            <span th:if="${event.status.name() == 'PENDING'}" style="color: orange;">На модерации</span>
+                    <div class="event-info-block">
+                        <p><strong>Дата:</strong> <span th:text="${#temporals.format(event.dateTime, 'dd.MM.yyyy HH:mm')}"></span></p>
+                        <p><strong>Место:</strong> <span th:text="${event.place}"></span></p>
+                        <p><strong>Стиль:</strong> <span th:text="${event.style}"></span></p>
+                        <p><strong>Организатор:</strong> <span th:text="${event.organizer.username}"></span></p>
+                        <p><strong>Статус:</strong>
+                            <span th:if="${event.status.name() == 'APPROVED'}" class="status-approved">Одобрено</span>
+                            <span th:if="${event.status.name() == 'PENDING'}" class="status-pending">На модерации</span>
                         </p>
                     </div>
 
                     <h3>Описание</h3>
-                    <p th:text="${event.description}" style="line-height: 1.6;">Описание события</p>
+                    <p th:text="${event.description}">Описание события</p>
 
-                    <!-- Лайки -->
-                    <div style="display: flex; align-items: center; gap: 2rem; margin: 2rem 0; padding: 1rem 0; border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200);">
-                        <button class="like-btn" th:data-event-id="${event.id}" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem;">
+                    <div class="event-actions-bar">
+                        <button class="like-btn" th:data-event-id="${event.id}">
                             <span class="like-icon">❤️</span>
                             <span class="like-count" th:text="${event.likes.size()}">0</span>
                         </button>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button class="favorite-btn" th:data-event-id="${event.id}">
+                            <span class="favorite-icon">⭐</span>
+                            <span class="favorite-count" th:text="${event.favoritedByUsers.size()}">0</span>
+                        </button>
+                        <div class="comments-count">
                             💬 <span class="comment-count" th:text="${event.comments.size()}">0</span>
                         </div>
                     </div>
 
-                    <!-- Комментарии -->
                     <div id="comments-section">
                         <h3>Комментарии (<span class="comment-count-display" th:text="${event.comments.size()}">0</span>)</h3>
                         <div id="comments-list">
-                            <div th:each="comment : ${event.comments}" class="comment" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-200);">
-                                <strong th:text="${comment.user.username}"></strong>
-                                <span style="color: var(--gray-500); font-size: 0.75rem;" th:text="${#temporals.format(comment.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
-                                <p th:text="${comment.text}" style="margin-top: 0.25rem;"></p>
+                            <div th:each="comment : ${event.comments}" class="comment" th:data-comment-id="${comment.id}">
+                                <div class="comment-header">
+                                    <div>
+                                        <strong th:text="${comment.user.username}"></strong>
+                                        <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                                    </div>
+                                    <button class="delete-comment-btn"
+                                            th:data-comment-id="${comment.id}"
+                                            th:if="${#authorization.expression('isAuthenticated()') and (comment.user.username == #authentication.name or #authorization.expression('hasRole(''ADMIN'')'))}">
+                                        Удалить
+                                    </button>
+                                </div>
+                                <p th:text="${comment.text}"></p>
                             </div>
                         </div>
 
-                        <div th:if="${#authorization.expression('isAuthenticated()')}">
-                            <div style="margin-top: 1rem;">
-                                <textarea id="comment-text" class="form-control" rows="3" placeholder="Напишите комментарий..."></textarea>
-                                <button id="submit-comment" class="btn btn-primary" style="margin-top: 0.5rem;">Отправить</button>
-                            </div>
+                        <div th:if="${#authorization.expression('isAuthenticated()')}" class="add-comment-form">
+                            <textarea id="comment-text" class="form-control" rows="3" placeholder="Напишите комментарий..."></textarea>
+                            <button id="submit-comment" class="btn btn-primary">Отправить</button>
                         </div>
-                        <div th:unless="${#authorization.expression('isAuthenticated()')}" class="text-center" style="margin-top: 1rem;">
+                        <div th:unless="${#authorization.expression('isAuthenticated()')}" class="login-prompt">
                             <a th:href="@{/login}">Войдите</a>, чтобы оставить комментарий
                         </div>
                     </div>
 
-                    <!-- Кнопки действий -->
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a th:href="@{/events}" class="btn btn-outline">← Назад</a>
-
-                        <div th:if="${#authorization.expression('isAuthenticated()')}">
-                            <div th:if="${event.organizer.username == #authentication.name}">
-                                <a th:href="@{/events/{id}/edit(id=${event.id})}" class="btn btn-primary">Редактировать</a>
-                                <form th:action="@{/events/{id}/delete(id=${event.id})}" method="post" style="display: inline;">
-                                    <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="return confirm('Удалить это событие?')">Удалить</button>
-                                </form>
-                            </div>
-                            <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                                <a th:href="@{/events/{id}/edit(id=${event.id})}" class="btn btn-primary">Редактировать</a>
-                                <form th:action="@{/events/{id}/delete(id=${event.id})}" method="post" style="display: inline;">
-                                    <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545;" onclick="return confirm('Удалить это событие?')">Удалить</button>
-                                </form>
-                            </div>
+                    <div class="event-actions-footer">
+                        <a th:href="@{/events}" class="btn btn-outline">Назад</a>
+                        <div th:if="${#authorization.expression('isAuthenticated()') and (isOwner or isAdmin)}" class="event-edit-actions">
+                            <a th:href="@{/events/{id}/edit(id=${event.id})}" class="btn btn-primary">Редактировать</a>
+                            <form th:action="@{/events/{id}/delete(id=${event.id})}" method="post">
+                                <button type="submit" class="btn btn-outline btn-danger" onclick="return confirm('Удалить это событие?')">Удалить</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -92,75 +91,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    const eventId = /*[[${event.id}]]*/ null;
-    /*]]>*/
-
-    console.log("Event ID:", eventId);
-
-    function updateLikeButton() {
-        fetch('/tatardancespace/api/events/' + eventId + '/stats')
-            .then(res => res.json())
-            .then(data => {
-                $('.like-count').text(data.likesCount);
-                if (data.liked) {
-                    $('.like-icon').css('color', '#dc3545');
-                } else {
-                    $('.like-icon').css('color', '');
-                }
-            })
-            .catch(error => console.error('Error updating likes:', error));
-    }
-
-    $('.like-btn').on('click', function() {
-        fetch('/tatardancespace/api/events/' + eventId + '/like', { method: 'POST' })
-            .then(res => res.json())
-            .then(data => {
-                $('.like-count').text(data.likesCount);
-                if (data.liked) {
-                    $('.like-icon').css('color', '#dc3545');
-                } else {
-                    $('.like-icon').css('color', '');
-                }
-            })
-            .catch(error => console.error('Error toggling like:', error));
-    });
-
-    $('#submit-comment').on('click', function() {
-        const text = $('#comment-text').val();
-        if (!text.trim()) return;
-
-        fetch('/tatardancespace/api/events/' + eventId + '/comment?text=' + encodeURIComponent(text), { method: 'POST' })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const newComment = `
-                        <div class="comment" style="padding: 0.75rem; border-bottom: 1px solid var(--gray-200);">
-                            <strong>${escapeHtml(data.author)}</strong>
-                            <span style="color: var(--gray-500); font-size: 0.75rem;">${data.createdAt}</span>
-                            <p style="margin-top: 0.25rem;">${escapeHtml(data.text)}</p>
-                        </div>
-                    `;
-                    $('#comments-list').append(newComment);
-                    $('#comment-text').val('');
-                    updateLikeButton();
-                }
-            })
-            .catch(error => console.error('Error posting comment:', error));
-    });
-
-    function escapeHtml(text) {
-        if (!text) return '';
-        return text.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    updateLikeButton();
+    window.eventId = /*[[${event.id}]]*/ null;
 </script>
+<script th:src="@{/js/events-detail.js}"></script>
 
 </body>
 </html>

@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-create-favorites-table
+      author: tatardancespace
+      changes:
+        - createTable:
+            tableName: favorites
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            constraintName: fk_favorite_user
+            baseTableName: favorites
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: fk_favorite_event
+            baseTableName: favorites
+            baseColumnNames: event_id
+            referencedTableName: events
+            referencedColumnNames: id
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            constraintName: unique_user_event_favorite
+            tableName: favorites
+            columnNames: user_id, event_id

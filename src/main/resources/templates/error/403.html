@@ -21,7 +21,7 @@
         </p>
 
         <div style="margin-top: 2rem;">
-            <a th:href="@{/}" class="btn btn-primary">🏠 На главную</a>
+            <a th:href="@{/}" class="btn btn-primary"> На главную</a>
             <a th:href="@{/login}" class="btn btn-outline" style="margin-left: 1rem;" th:unless="${#authorization.expression('isAuthenticated()')}">🔑 Войти</a>
         </div>
     </div>

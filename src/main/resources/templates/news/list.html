@@ -30,6 +30,12 @@
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.CONTEXT_PATH = /*[[@{/}]]*/ '';
+    /*]]>*/
+</script>
+
 <script th:src="@{/js/news.js}"></script>
 </body>
 </html>

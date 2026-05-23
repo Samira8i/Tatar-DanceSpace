@@ -3,6 +3,7 @@ package com.tatardancespace.service;
 import com.tatardancespace.entity.Comment;
 import com.tatardancespace.entity.Event;
 import com.tatardancespace.entity.User;
+import com.tatardancespace.exception.CommentNotFoundException;
 import com.tatardancespace.exception.EventNotFoundException;
 import com.tatardancespace.repository.CommentRepository;
 import com.tatardancespace.repository.EventRepository;
@@ -48,5 +49,17 @@ public class CommentService {
 
     public long getCommentsCount(Long eventId) {
         return commentRepository.findByEventIdOrderByCreatedAtDesc(eventId).size();
+    }
+
+    public Comment getCommentById(Long id) {
+        log.debug("Fetching comment by id: {}", id);
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new CommentNotFoundException(id));
+    }
+
+    @Transactional
+    public void deleteComment(Long id) {
+        log.info("Deleting comment {}", id);
+        commentRepository.deleteById(id);
     }
 }

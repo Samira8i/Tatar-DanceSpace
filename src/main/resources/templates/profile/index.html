@@ -10,10 +10,10 @@
         <div style="max-width: 1000px; margin: 0 auto;">
 
             <div th:if="${param.updated}" class="auth-success" style="margin-bottom: 1rem;">
-                ✅ Профиль обновлён!
+                Профиль обновлён!
             </div>
             <div th:if="${param.deleted}" class="auth-success" style="margin-bottom: 1rem;">
-                ✅ Удалено!
+                Удалено!
             </div>
 
             <!-- Информация о пользователе -->
@@ -24,9 +24,9 @@
                 <div style="flex: 1;">
                     <h1 th:text="${user.username}" style="color: var(--sapphire);">Имя пользователя</h1>
                     <p style="color: var(--gray-600);" th:text="${user.email}">email@example.com</p>
-                    <p style="color: var(--gray-500); font-size: 0.875rem;">📅 Зарегистрирован: <span th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy')}"></span></p>
+                    <p style="color: var(--gray-500); font-size: 0.875rem;">Зарегистрирован: <span th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy')}"></span></p>
                     <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                        <a th:href="@{/profile/edit}" class="btn btn-outline">✏️ Редактировать профиль</a>
+                        <a th:href="@{/profile/edit}" class="btn btn-outline">✏Редактировать профиль</a>
                     </div>
                 </div>
             </div>
@@ -45,69 +45,128 @@
                     <div class="stat-number" th:text="${reviewsCount}">0</div>
                     <div class="stat-label">Отзывов оставлено</div>
                 </div>
+                <div>
+                    <div class="stat-number" th:text="${favoritesCount}">0</div>
+                    <div class="stat-label">В избранном</div>
+                </div>
             </div>
 
-            <!-- Мои события -->
+            <!-- Вкладки -->
             <div style="margin-bottom: 2rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2>📅 Мои события</h2>
-                    <a th:href="@{/events/add}" class="btn btn-primary">+ Создать событие</a>
+                <div style="display: flex; gap: 0.5rem; border-bottom: 2px solid var(--gray-200); margin-bottom: 1.5rem;">
+                    <button class="tab-btn active" data-tab="events">Мои события</button>
+                    <button class="tab-btn" data-tab="halls">Мои залы</button>
+                    <button class="tab-btn" data-tab="reviews">Мои отзывы</button>
+                    <button class="tab-btn" data-tab="favorites">⭐Избранное</button>
                 </div>
 
-                <div th:if="${not #lists.isEmpty(myEvents)}">
-                    <div class="grid grid-3">
-                        <div th:each="event : ${myEvents}" class="card">
-                            <div class="card-content">
-                                <h3 th:text="${event.title}">Название</h3>
-                                <p th:text="${#temporals.format(event.dateTime, 'dd.MM.yyyy HH:mm')}">Дата</p>
-                                <p th:text="${event.place}">Место</p>
-                                <p th:if="${event.status.name() == 'APPROVED'}" style="color: #7A8450;">✅ Одобрено</p>
-                                <p th:if="${event.status.name() == 'PENDING'}" style="color: orange;">⏳ На модерации</p>
-                                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                                    <a th:href="@{/events/{id}/edit(id=${event.id})}" class="btn btn-outline" style="flex: 1; text-align: center;">✏️</a>
-                                    <form th:action="@{/events/{id}/delete(id=${event.id})}" method="post" style="flex: 1;">
-                                        <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545; width: 100%;" onclick="return confirm('Удалить событие?')">🗑️</button>
-                                    </form>
+                <!-- Вкладка: Мои события -->
+                <div id="tab-events" class="tab-content active">
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                        <a th:href="@{/events/add}" class="btn btn-primary">+ Создать событие</a>
+                    </div>
+
+                    <div th:if="${not #lists.isEmpty(myEvents)}">
+                        <div class="grid grid-3">
+                            <div th:each="event : ${myEvents}" class="card">
+                                <div class="card-content">
+                                    <h3 th:text="${event.title}">Название</h3>
+                                    <p th:text="${#temporals.format(event.dateTime, 'dd.MM.yyyy HH:mm')}">Дата</p>
+                                    <p th:text="${event.place}">Место</p>
+                                    <p th:if="${event.status.name() == 'APPROVED'}" style="color: #7A8450;">✅ Одобрено</p>
+                                    <p th:if="${event.status.name() == 'PENDING'}" style="color: orange;">⏳ На модерации</p>
+                                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                        <a th:href="@{/events/{id}/edit(id=${event.id})}" class="btn btn-outline" style="flex: 1; text-align: center;">✏️</a>
+                                        <form th:action="@{/events/{id}/delete(id=${event.id})}" method="post" style="flex: 1;">
+                                            <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545; width: 100%;" onclick="return confirm('Удалить событие?')">🗑️</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div th:if="${#lists.isEmpty(myEvents)}" class="text-center" style="padding: 2rem; background: var(--gray-50); border-radius: var(--radius-md);">
-                    <p>У вас пока нет событий</p>
-                    <a th:href="@{/events/add}" class="btn btn-primary" style="margin-top: 0.5rem;">Создать событие</a>
-                </div>
-            </div>
-
-            <!-- Мои залы -->
-            <div style="margin-bottom: 2rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2>🏛️ Мои залы</h2>
-                    <a th:href="@{/halls/add}" class="btn btn-primary">+ Добавить зал</a>
+                    <div th:if="${#lists.isEmpty(myEvents)}" class="text-center" style="padding: 2rem; background: var(--gray-50); border-radius: var(--radius-md);">
+                        <p>У вас пока нет событий</p>
+                        <a th:href="@{/events/add}" class="btn btn-primary" style="margin-top: 0.5rem;">Создать событие</a>
+                    </div>
                 </div>
 
-                <div th:if="${not #lists.isEmpty(myHalls)}">
-                    <div class="grid grid-3">
-                        <div th:each="hall : ${myHalls}" class="card">
-                            <div class="card-content">
-                                <h3 th:text="${hall.name}">Название</h3>
-                                <p th:text="${hall.address}">Адрес</p>
-                                <p th:text="${hall.price} + ' ₽/час'">Цена</p>
-                                <p th:if="${hall.status.name() == 'APPROVED'}" style="color: #7A8450;">✅ Одобрено</p>
-                                <p th:if="${hall.status.name() == 'PENDING'}" style="color: orange;">⏳ На модерации</p>
-                                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                                    <a th:href="@{/halls/{id}/edit(id=${hall.id})}" class="btn btn-outline" style="flex: 1; text-align: center;">✏️</a>
-                                    <form th:action="@{/halls/{id}/delete(id=${hall.id})}" method="post" style="flex: 1;">
-                                        <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545; width: 100%;" onclick="return confirm('Удалить зал?')">🗑️</button>
-                                    </form>
+                <!-- Вкладка: Мои залы -->
+                <div id="tab-halls" class="tab-content" style="display: none;">
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                        <a th:href="@{/halls/add}" class="btn btn-primary">+ Добавить зал</a>
+                    </div>
+
+                    <div th:if="${not #lists.isEmpty(myHalls)}">
+                        <div class="grid grid-3">
+                            <div th:each="hall : ${myHalls}" class="card">
+                                <div class="card-content">
+                                    <h3 th:text="${hall.name}">Название</h3>
+                                    <p th:text="${hall.address}">Адрес</p>
+                                    <p th:text="${hall.price} + ' ₽/час'">Цена</p>
+                                    <p th:if="${hall.status.name() == 'APPROVED'}" style="color: #7A8450;">✅ Одобрено</p>
+                                    <p th:if="${hall.status.name() == 'PENDING'}" style="color: orange;">⏳ На модерации</p>
+                                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                        <a th:href="@{/halls/{id}/edit(id=${hall.id})}" class="btn btn-outline" style="flex: 1; text-align: center;">✏️</a>
+                                        <form th:action="@{/halls/{id}/delete(id=${hall.id})}" method="post" style="flex: 1;">
+                                            <button type="submit" class="btn btn-outline" style="border-color: #dc3545; color: #dc3545; width: 100%;" onclick="return confirm('Удалить зал?')">🗑️</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div th:if="${#lists.isEmpty(myHalls)}" class="text-center" style="padding: 2rem; background: var(--gray-50); border-radius: var(--radius-md);">
+                        <p>У вас пока нет залов</p>
+                        <a th:href="@{/halls/add}" class="btn btn-primary" style="margin-top: 0.5rem;">Добавить зал</a>
+                    </div>
                 </div>
-                <div th:if="${#lists.isEmpty(myHalls)}" class="text-center" style="padding: 2rem; background: var(--gray-50); border-radius: var(--radius-md);">
-                    <p>У вас пока нет залов</p>
-                    <a th:href="@{/halls/add}" class="btn btn-primary" style="margin-top: 0.5rem;">Добавить зал</a>
+
+                <!-- Вкладка: Мои отзывы -->
+                <div id="tab-reviews" class="tab-content" style="display: none;">
+                    <div th:if="${not #lists.isEmpty(myReviews)}">
+                        <div class="grid grid-3">
+                            <div th:each="review : ${myReviews}" class="card">
+                                <div class="card-content">
+                                    <h3>Отзыв на зал <span th:text="${review.hall.name}"></span></h3>
+                                    <div class="stars" style="color: #f5a623;">
+                                        <span th:each="i : ${#numbers.sequence(1, review.rating)}">★</span>
+                                        <span th:each="i : ${#numbers.sequence(1, 5 - review.rating)}">☆</span>
+                                    </div>
+                                    <p th:text="${review.text}">Текст отзыва</p>
+                                    <p style="font-size: 0.75rem; color: var(--gray-500);" th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy')}">Дата</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(myReviews)}" class="text-center" style="padding: 2rem; background: var(--gray-50); border-radius: var(--radius-md);">
+                        <p>У вас пока нет отзывов</p>
+                        <a th:href="@{/halls}" class="btn btn-outline">Посмотреть залы</a>
+                    </div>
+                </div>
+
+                <!-- Вкладка: Избранное -->
+                <div id="tab-favorites" class="tab-content" style="display: none;">
+                    <div th:if="${not #lists.isEmpty(favoriteEvents)}">
+                        <div class="grid grid-3">
+                            <div th:each="event : ${favoriteEvents}" class="card">
+                                <div class="card-content">
+                                    <h3 th:text="${event.title}">Название события</h3>
+                                    <p th:text="${#temporals.format(event.dateTime, 'dd.MM.yyyy HH:mm')}">Дата</p>
+                                    <p th:text="${event.place}">Место</p>
+                                    <p th:text="${event.style}">Стиль</p>
+                                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                        <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-primary" style="flex: 1; text-align: center;">Подробнее</a>
+                                        <button class="remove-favorite-btn btn btn-outline" th:data-event-id="${event.id}" style="border-color: #dc3545; color: #dc3545;">🗑️</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(favoriteEvents)}" class="text-center" style="padding: 2rem; background: var(--gray-50); border-radius: var(--radius-md);">
+                        <p>⭐ У вас пока нет избранных событий</p>
+                        <a th:href="@{/events}" class="btn btn-outline">Посмотреть события</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,6 +174,41 @@
 </section>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    // Переключение вкладок
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.getAttribute('data-tab');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.style.display = 'none');
+
+            tab.classList.add('active');
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+        });
+    });
+
+    // Удаление из избранного
+    document.querySelectorAll('.remove-favorite-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const eventId = this.getAttribute('data-event-id');
+            if (!confirm('Удалить это событие из избранного?')) return;
+
+            fetch('/tatardancespace/api/events/' + eventId + '/favorite', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
 
 </body>
 </html>

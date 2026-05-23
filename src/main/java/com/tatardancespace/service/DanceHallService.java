@@ -1,20 +1,22 @@
 package com.tatardancespace.service;
 
 import com.tatardancespace.dto.request.HallRequest;
+import com.tatardancespace.dto.response.HallWithRatingResponse;
 import com.tatardancespace.entity.DanceHall;
 import com.tatardancespace.entity.Status;
 import com.tatardancespace.entity.User;
 import com.tatardancespace.exception.AccessDeniedException;
 import com.tatardancespace.exception.HallNotFoundException;
 import com.tatardancespace.repository.DanceHallRepository;
-import org.springframework.cache.annotation.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DanceHallService {
@@ -22,13 +24,15 @@ public class DanceHallService {
     private static final Logger log = LoggerFactory.getLogger(DanceHallService.class);
 
     private final DanceHallRepository danceHallRepository;
+    private final ReviewService reviewService;
 
-    public DanceHallService(DanceHallRepository danceHallRepository) {
+    public DanceHallService(DanceHallRepository danceHallRepository, ReviewService reviewService) {
         this.danceHallRepository = danceHallRepository;
+        this.reviewService = reviewService;
     }
+
     @Cacheable(value = "halls", key = "'approved'")
     public List<DanceHall> getApprovedHalls() {
-        log.debug("идем в базу данных за одобренными залами");
         return danceHallRepository.findByStatus(Status.APPROVED);
     }
 
@@ -48,7 +52,6 @@ public class DanceHallService {
 
     @Transactional
     public DanceHall createHall(HallRequest request, User owner) {
-        log.info("=== CREATING NEW HALL ===");
         log.info("Owner: {} (id: {})", owner.getEmail(), owner.getId());
         log.info("Hall data: name={}, address={}, price={}", request.getName(), request.getAddress(), request.getPrice());
 
@@ -118,14 +121,17 @@ public class DanceHallService {
         log.info("Rejecting hall {}", id);
         danceHallRepository.deleteById(id);
     }
+
     public List<DanceHall> getHallsByOwner(Long ownerId) {
         log.debug("Fetching halls for owner: {}", ownerId);
         return danceHallRepository.findByOwnerId(ownerId);
     }
+
     public List<DanceHall> getHallsByStatus(Status status) {
         log.debug("Fetching halls for status: {}", status);
         return danceHallRepository.findByStatus(status);
     }
+
     public boolean isOwner(Long hallId, Long userId) {
         DanceHall hall = getHallById(hallId);
         return hall.getOwner().getId().equals(userId);
@@ -134,5 +140,33 @@ public class DanceHallService {
     public boolean canEdit(Long hallId, User user) {
         DanceHall hall = getHallById(hallId);
         return hall.getOwner().getId().equals(user.getId()) || user.getRole().name().equals("ADMIN");
+    }
+
+    public List<DanceHall> getAllHalls() {
+        log.debug("Fetching ALL halls for admin");
+        return danceHallRepository.findAllByOrderByIdDesc();
+    }
+
+
+    public List<HallWithRatingResponse> getTopRatedHallsWithRating() {
+        List<DanceHall> halls = danceHallRepository.findTopRatedHalls();
+
+        return halls.stream()
+                .limit(5)
+                .map(hall -> {
+                    double avgRating = reviewService.getAverageRating(hall.getId());
+                    int reviewsCount = reviewService.getReviewsByHallId(hall.getId()).size();
+                    return new HallWithRatingResponse(
+                            hall.getId(),
+                            hall.getName(),
+                            hall.getAddress(),
+                            hall.getPrice(),
+                            hall.getDescription(),
+                            hall.getImageUrl(),
+                            avgRating,
+                            reviewsCount
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }

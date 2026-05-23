@@ -13,7 +13,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     boolean existsByUserIdAndEventId(Long userId, Long eventId);
 
-    @Transactional
     @Modifying
     @Query("DELETE FROM Like l WHERE l.user.id = :userId AND l.event.id = :eventId")
     void deleteByUserIdAndEventId(@Param("userId") Long userId, @Param("eventId") Long eventId);

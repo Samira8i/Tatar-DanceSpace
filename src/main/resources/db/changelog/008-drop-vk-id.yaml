@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-drop-vk-id
+      author: tatardancespace
+      changes:
+        - dropColumn:
+            tableName: users
+            columnName: vk_id

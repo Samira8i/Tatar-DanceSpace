@@ -9,8 +9,7 @@
     <div class="container">
         <h2 class="section-title" th:text="${title != null ? title : 'Танцевальные события'}">Танцевальные события</h2>
 
-        <!-- Блок фильтрации по статусу -->
-        <div class="filter-bar" style="display: flex; gap: 1rem; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;">
+        <div th:if="${showAdminFilters}" class="filter-bar" style="display: flex; gap: 1rem; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;">
             <div style="display: flex; gap: 0.5rem;">
                 <a th:href="@{/events/status/APPROVED}" class="btn" th:classappend="${currentStatus?.name() == 'APPROVED'} ? 'btn-primary' : 'btn-outline'">
                      Одобренные
@@ -26,7 +25,10 @@
             <a th:href="@{/events/add}" class="btn btn-primary">+ Создать событие</a>
         </div>
 
-        <!-- Flash сообщения -->
+        <div th:unless="${showAdminFilters}" style="display: flex; justify-content: flex-end; margin-bottom: 2rem;">
+            <a th:href="@{/events/add}" class="btn btn-primary">+ Создать событие</a>
+        </div>
+
         <div th:if="${param.success}" class="auth-success" style="margin-bottom: 1rem;">
             Событие успешно создано! Ожидает модерации.
         </div>
@@ -34,11 +36,10 @@
             Событие удалено
         </div>
 
-        <!-- Сообщение если нет событий -->
         <div th:if="${events.empty}" class="text-center" style="padding: 4rem;">
-            <p th:if="${currentStatus?.name() == 'APPROVED'}">✅ Нет одобренных событий</p>
-            <p th:if="${currentStatus?.name() == 'PENDING'}">⏳ Нет событий на модерации</p>
-            <p th:unless="${currentStatus}">🎭 Пока нет событий. Будьте первым организатором!</p>
+            <p th:if="${currentStatus?.name() == 'APPROVED'}"> Нет одобренных событий</p>
+            <p th:if="${currentStatus?.name() == 'PENDING'}"> Нет событий на модерации</p>
+            <p th:unless="${currentStatus}"> Пока нет событий. Будьте первым организатором!</p>
             <a th:href="@{/events/add}" class="btn btn-primary" style="margin-top: 1rem;">Создать событие</a>
         </div>
 
@@ -54,11 +55,13 @@
                     <p class="card-text" th:text="${#temporals.format(event.dateTime, 'dd.MM.yyyy HH:mm')}">Дата</p>
                     <p class="card-text" th:text="${event.place}">Место</p>
                     <p class="card-text" th:text="${event.style}">Стиль</p>
-                    <p class="card-text">
-                        Статус:
-                        <span th:if="${event.status.name() == 'APPROVED'}" style="color: #7A8450;">✅ Одобрено</span>
-                        <span th:if="${event.status.name() == 'PENDING'}" style="color: orange;">⏳ На модерации</span>
-                    </p>
+                    <div th:if="${showAdminFilters}">
+                        <p class="card-text">
+                            Статус:
+                            <span th:if="${event.status.name() == 'APPROVED'}" style="color: #7A8450;">✅ Одобрено</span>
+                            <span th:if="${event.status.name() == 'PENDING'}" style="color: orange;">⏳ На модерации</span>
+                        </p>
+                    </div>
                     <div style="margin-top: 1rem;">
                         <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-outline" style="width: 100%; text-align: center;">Подробнее</a>
                     </div>

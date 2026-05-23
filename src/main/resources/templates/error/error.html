@@ -1,10 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head}"></head>
 <body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="error-section">
+    <div class="container" style="text-align: center; padding: 4rem 2rem;">
+        <div style="font-size: 5rem; margin-bottom: 1rem;"></div>
+
+        <h1 style="font-size: 6rem; color: var(--sapphire); margin: 0;">Ошибка</h1>
+        <h2 style="color: var(--gray-700); margin-top: 0.5rem;">Что-то пошло не так</h2>
+
+        <p style="color: var(--gray-500); max-width: 400px; margin: 1rem auto;">
+            Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.
+        </p>
+
+        <div style="margin-top: 2rem;">
+            <a th:href="@{/}" class="btn btn-primary"> На главную</a>
+            <button onclick="location.reload()" class="btn btn-outline" style="margin-left: 1rem;"> Обновить</button>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<style>
+    .error-section {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 
 </body>
 </html>

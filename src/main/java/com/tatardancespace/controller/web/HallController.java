@@ -2,6 +2,7 @@ package com.tatardancespace.controller.web;
 
 import com.tatardancespace.dto.request.HallRequest;
 import com.tatardancespace.dto.request.ReviewRequest;
+import com.tatardancespace.entity.DanceHall;
 import com.tatardancespace.entity.Status;
 import com.tatardancespace.service.CustomUserDetails;
 import com.tatardancespace.service.DanceHallService;
@@ -29,8 +30,18 @@ public class HallController {
     }
 
     @GetMapping
-    public String listHalls(Model model) {
-        model.addAttribute("halls", danceHallService.getApprovedHalls());
+    public String listHalls(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        boolean isAdmin = userDetails != null && userDetails.getUser().getRole().name().equals("ADMIN");
+
+        if (isAdmin) {
+            model.addAttribute("halls", danceHallService.getAllHalls());
+            model.addAttribute("showAdminFilters", true);
+        } else {
+            model.addAttribute("halls", danceHallService.getApprovedHalls());
+            model.addAttribute("showAdminFilters", false);
+        }
+
+        model.addAttribute("isAdmin", isAdmin);
         return "halls/list";
     }
 
@@ -90,8 +101,17 @@ public class HallController {
             return "redirect:/halls?error=access_denied";
         }
 
-        model.addAttribute("hall", danceHallService.getHallById(id));
-        model.addAttribute("hallRequest", new HallRequest());
+        DanceHall hall = danceHallService.getHallById(id);
+        model.addAttribute("hall", hall);
+
+        HallRequest request = new HallRequest();
+        request.setName(hall.getName());
+        request.setAddress(hall.getAddress());
+        request.setPrice(hall.getPrice());
+        request.setDescription(hall.getDescription());
+        request.setImageUrl(hall.getImageUrl());
+
+        model.addAttribute("hallRequest", request);
         return "halls/edit";
     }
 
@@ -124,10 +144,18 @@ public class HallController {
     }
 
     @GetMapping("/status/{status}")
-    public String filterByStatus(@PathVariable Status status, Model model) {
+    public String filterByStatus(@PathVariable Status status,
+                                 @AuthenticationPrincipal CustomUserDetails userDetails,
+                                 Model model) {
+        if (userDetails == null || !userDetails.getUser().getRole().name().equals("ADMIN")) {
+            return "redirect:/halls?error=access_denied";
+        }
+
         model.addAttribute("halls", danceHallService.getHallsByStatus(status));
         model.addAttribute("currentStatus", status);
         model.addAttribute("title", "Залы - " + status);
+        model.addAttribute("isAdmin", true);
+        model.addAttribute("showAdminFilters", true);
         return "halls/list";
     }
 }

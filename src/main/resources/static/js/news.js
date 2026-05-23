@@ -1,21 +1,16 @@
-/**
- * News Module - Бесконечный скроллинг новостей
- * Требования: jQuery (если есть) или чистый JS
- */
+// News Module - Бесконечный скроллинг новостей
 
 (function() {
     'use strict';
 
-    // Конфигурация
     const CONFIG = {
         pageSize: 9,
-        scrollThreshold: 500,  // за сколько пикселей до конца начинать подгрузку
+        scrollThreshold: 500,
         containerId: 'news-container',
         loadingId: 'loading-indicator',
         endId: 'news-end-marker'
     };
 
-    // Состояние
     let state = {
         currentPage: 0,
         isLoading: false,
@@ -23,12 +18,19 @@
         totalLoaded: 0
     };
 
-    // DOM элементы
     let elements = {};
 
-    /**
-     * Инициализация модуля
-     */
+    function getContextPath() {
+        if (window.CONTEXT_PATH !== undefined) {
+            return window.CONTEXT_PATH;
+        }
+        const meta = document.querySelector('meta[name="context-path"]');
+        if (meta) {
+            return meta.getAttribute('content');
+        }
+        return '';
+    }
+
     function init() {
         elements.container = document.getElementById(CONFIG.containerId);
         elements.loading = document.getElementById(CONFIG.loadingId);
@@ -39,7 +41,6 @@
             return;
         }
 
-        // Создаем элементы, если их нет
         if (!elements.loading) {
             elements.loading = createLoadingElement();
         }
@@ -47,16 +48,10 @@
             elements.end = createEndElement();
         }
 
-        // Загружаем первую порцию
         loadNews();
-
-        // Добавляем слушатель скролла
         window.addEventListener('scroll', handleScroll);
     }
 
-    /**
-     * Создает элемент загрузки
-     */
     function createLoadingElement() {
         const div = document.createElement('div');
         div.id = CONFIG.loadingId;
@@ -70,25 +65,19 @@
         return div;
     }
 
-    /**
-     * Создает элемент "конец ленты"
-     */
     function createEndElement() {
         const div = document.createElement('div');
         div.id = CONFIG.endId;
         div.className = 'news-end';
         div.style.display = 'none';
         div.innerHTML = `
-            <p>✨ Вы прочитали все свежие новости</p>
-            <p style="font-size: 0.75rem;">Загляните позже — здесь появятся новые статьи</p>
+            <p>Вы прочитали все свежие новости</p>
+            <p>Загляните позже — здесь появятся новые статьи</p>
         `;
         elements.container.parentNode.appendChild(div);
         return div;
     }
 
-    /**
-     * Экранирует HTML для безопасности
-     */
     function escapeHtml(text) {
         if (!text) return '';
         return text
@@ -99,26 +88,6 @@
             .replace(/'/g, '&#39;');
     }
 
-    /**
-     * Форматирует дату
-     */
-    function formatDate(dateString) {
-        if (!dateString) return '';
-        try {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        } catch (e) {
-            return dateString;
-        }
-    }
-
-    /**
-     * Создает HTML карточки новости
-     */
     function createNewsCard(item) {
         const card = document.createElement('div');
         card.className = 'news-card';
@@ -127,18 +96,18 @@
 
         if (hasImage) {
             card.innerHTML = `
-                <div class="news-card-image" style="background-image: url('${escapeHtml(item.imageUrl)}')"></div>
+                <div class="news-card-image">
+                    <img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=news-card-icon><span>📰</span></div>'">
+                </div>
             `;
         } else {
-            card.innerHTML = `
-                <div class="news-card-icon">📰</div>
-            `;
+            card.innerHTML = `<div class="news-card-icon"><span>📰</span></div>`;
         }
 
         const content = document.createElement('div');
         content.className = 'news-card-content';
         content.innerHTML = `
-            ${item.publishedAt ? `<div class="news-date">📅 ${escapeHtml(formatDate(item.publishedAt))}</div>` : ''}
+            ${item.publishedAt ? `<div class="news-date">📅 ${escapeHtml(item.publishedAt)}</div>` : ''}
             <h3 class="news-title">${escapeHtml(item.title)}</h3>
             <p class="news-description">${escapeHtml(item.description || '')}</p>
             <a href="${escapeHtml(item.url)}" target="_blank" class="news-link" rel="noopener noreferrer">
@@ -150,31 +119,21 @@
         return card;
     }
 
-    /**
-     * Отображает новости
-     */
     function renderNews(newsItems) {
         if (state.currentPage === 0) {
             elements.container.innerHTML = '';
         }
 
         const fragment = document.createDocumentFragment();
-
         newsItems.forEach(item => {
-            const card = createNewsCard(item);
-            fragment.appendChild(card);
+            fragment.appendChild(createNewsCard(item));
         });
 
         elements.container.appendChild(fragment);
         state.totalLoaded += newsItems.length;
-
-        // Обновляем счетчик (если есть)
         updateCounter();
     }
 
-    /**
-     * Обновляет счетчик новостей
-     */
     function updateCounter() {
         let counter = document.querySelector('.news-counter');
         if (!counter && state.totalLoaded > 0) {
@@ -187,9 +146,6 @@
         }
     }
 
-    /**
-     * Показывает ошибку загрузки
-     */
     function showError() {
         if (state.currentPage === 0 && elements.container.children.length === 0) {
             elements.container.innerHTML = `
@@ -202,18 +158,16 @@
         }
     }
 
-    /**
-     * Загружает новости с сервера
-     */
     async function loadNews() {
         if (state.isLoading || !state.hasMore) return;
 
         state.isLoading = true;
-        showLoading(true);
+        if (elements.loading) elements.loading.style.display = 'block';
 
         try {
-            const contextPath = document.querySelector('meta[name="context-path"]')?.content || '';
-            const url = `${contextPath}/api/news?page=${state.currentPage}&size=${CONFIG.pageSize}`;
+            const contextPath = getContextPath();
+            const baseUrl = contextPath ? contextPath.replace(/\/$/, '') : '';
+            const url = `${baseUrl}/api/news?page=${state.currentPage}&size=${CONFIG.pageSize}`;
 
             const response = await fetch(url);
 
@@ -233,9 +187,8 @@
                 state.hasMore = false;
             }
 
-            // Показываем конец ленты
-            if (!state.hasMore && state.currentPage > 0) {
-                showEndMarker();
+            if (!state.hasMore && state.currentPage > 0 && elements.end) {
+                elements.end.style.display = 'block';
             }
 
         } catch (error) {
@@ -243,31 +196,10 @@
             showError();
         } finally {
             state.isLoading = false;
-            showLoading(false);
+            if (elements.loading) elements.loading.style.display = 'none';
         }
     }
 
-    /**
-     * Управляет отображением индикатора загрузки
-     */
-    function showLoading(show) {
-        if (elements.loading) {
-            elements.loading.style.display = show ? 'block' : 'none';
-        }
-    }
-
-    /**
-     * Показывает маркер конца ленты
-     */
-    function showEndMarker() {
-        if (elements.end) {
-            elements.end.style.display = 'block';
-        }
-    }
-
-    /**
-     * Обработчик скролла (бесконечная подгрузка)
-     */
     function handleScroll() {
         if (state.isLoading || !state.hasMore) return;
 
@@ -279,9 +211,6 @@
         }
     }
 
-    /**
-     * Сбрасывает состояние и загружает заново (полезно при фильтрах)
-     */
     function reset() {
         state = {
             currentPage: 0,
@@ -294,18 +223,15 @@
         loadNews();
     }
 
-    // Публичное API
     window.NewsModule = {
         init,
         reset,
         loadNews
     };
 
-    // Автоматическая инициализация при загрузке DOM
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
-
 })();

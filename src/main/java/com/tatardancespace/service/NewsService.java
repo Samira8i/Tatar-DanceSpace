@@ -22,16 +22,11 @@ public class NewsService {
         this.newsMapper = newsMapper;
     }
 
-    /**
-     * Получить первые 6 новостей для главной страницы
-     */
     public List<NewsResponse> getDanceNews() {
         return getDanceNews(0, 6);
     }
 
-    /**
-     * Получить новости с пагинацией
-     */
+
     public List<NewsResponse> getDanceNews(int page, int pageSize) {
         JsonNode response = newsApiClient.fetchNews(page, pageSize);
 
@@ -44,17 +39,6 @@ public class NewsService {
         return newsList.isEmpty() ? getFallbackNews(page, pageSize) : newsList;
     }
 
-    /**
-     * Проверяет, есть ли ещё новости (для бесконечного скроллинга)
-     */
-    public boolean hasMoreNews(int page, int pageSize) {
-        JsonNode response = newsApiClient.fetchNews(page, pageSize);
-        if (response == null || !response.has("articles")) {
-            return false;
-        }
-        JsonNode articles = response.get("articles");
-        return articles != null && articles.isArray() && articles.size() == pageSize;
-    }
 
     private List<NewsResponse> getFallbackNews(int page, int pageSize) {
         List<NewsResponse> allFallback = getAllFallbackNews();

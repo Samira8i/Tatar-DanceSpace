@@ -24,7 +24,6 @@ public class GlobalExceptionHandler {
     public ModelAndView handleNoResource(NoResourceFoundException ex, HttpServletRequest request) {
         String path = request.getRequestURI();
 
-        // Пропускаем статические ресурсы
         if (path.matches(".*\\.(css|js|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf)$")) {
             log.debug("Статический ресурс не найден: {}", path);
             return null;

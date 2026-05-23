@@ -24,23 +24,20 @@
         <h2 class="section-title">Пространство для танца</h2>
         <div class="grid grid-3">
             <div class="card fade-up">
-                <div class="card-icon">🏛️</div>
                 <div class="card-content">
-                    <h3 class="card-title">Аренда залов</h3>
+                    <h3 class="card-title">🏛️ Аренда залов</h3>
                     <p class="card-text">Просторные залы с профессиональным покрытием и зеркалами</p>
                 </div>
             </div>
             <div class="card fade-up">
-                <div class="card-icon">🎭</div>
                 <div class="card-content">
-                    <h3 class="card-title">Мастер-классы</h3>
+                    <h3 class="card-title">🎭 Мастер-классы</h3>
                     <p class="card-text">Уроки от ведущих хореографов и танцоров</p>
                 </div>
             </div>
             <div class="card fade-up">
-                <div class="card-icon">💬</div>
                 <div class="card-content">
-                    <h3 class="card-title">Сообщество</h3>
+                    <h3 class="card-title">💬 Сообщество</h3>
                     <p class="card-text">Единомышленники, обмен опытом, совместные проекты</p>
                 </div>
             </div>
@@ -48,32 +45,69 @@
     </div>
 </section>
 
-<!-- новости -->
-<div th:if="${#authorization.expression('isAuthenticated()')}">
-    <section class="section news-section">
+<!-- ТОП ЗАЛЫ -->
+<div th:if="${#authorization.expression('isAuthenticated()') and not #lists.isEmpty(topRatedHalls)}">
+    <section class="top-halls-section">
         <div class="container">
-            <h2 class="section-title">Новости мира танцев</h2>
+            <div class="section-header">
+                <h2 class="section-title">⭐ Лучшие залы Татарстана</h2>
+                <p class="section-subtitle">Проверенные залы с высоким рейтингом</p>
+            </div>
 
-            <div class="grid grid-3">
-                <div th:each="item : ${news}" class="card fade-up">
-                    <div class="card-image" th:if="${item.imageUrl != null and item.imageUrl != ''}"
-                         th:style="'background-image: url(' + ${item.imageUrl} + '); background-size: cover; background-position: center; height: 160px;'"></div>
-                    <div class="card-icon large" th:unless="${item.imageUrl != null and item.imageUrl != ''}">📰</div>
-                    <div class="card-content">
-                        <span th:if="${item.publishedAt != null and item.publishedAt != ''}" class="news-date">📅 <span th:text="${item.publishedAt}"></span></span>
-                        <h3 class="card-title" th:text="${item.title}">Заголовок</h3>
-                        <p class="card-text" th:text="${item.description}">Описание...</p>
-                        <a th:href="${item.url}" target="_blank" class="btn btn-outline news-link">Подробнее →</a>
+            <div class="halls-grid">
+                <div th:each="hall : ${topRatedHalls}" class="hall-card">
+                    <div class="hall-card-image">
+                        <div th:if="${!#strings.isEmpty(hall.imageUrl)}"
+                             th:style="'background-image: url(' + ${hall.imageUrl} + ');'"></div>
+                        <div th:unless="${!#strings.isEmpty(hall.imageUrl)}" class="hall-card-icon">🏛️</div>
+                        <div class="rating-badge">
+                            ⭐ <span th:text="${#numbers.formatDecimal(hall.averageRating, 1, 1)}">0</span>
+                        </div>
+                    </div>
+                    <div class="hall-card-body">
+                        <h3 class="hall-card-title" th:text="${hall.name}">Название зала</h3>
+                        <p class="hall-card-address" th:text="${hall.address}">Адрес</p>
+                        <p class="hall-card-price" th:text="${hall.price} + ' ₽/час'">Цена</p>
+                        <a th:href="@{/halls/{id}(id=${hall.id})}" class="hall-card-btn">Подробнее →</a>
                     </div>
                 </div>
             </div>
 
-            <div th:if="${news.empty}" class="text-center" style="padding: 3rem;">
-                <p>Новости временно недоступны. Загляните позже!</p>
+            <div class="text-center" style="margin-top: 2rem;">
+                <a th:href="@{/halls}" class="btn btn-outline">Все залы →</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- НОВОСТИ -->
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <section class="news-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Новости мира танцев</h2>
+                <p class="section-subtitle">Свежие новости со всего мира</p>
             </div>
 
-            <!-- Кнопка "Все новости" -->
-            <div style="text-align: center; margin-top: 2rem;">
+            <div class="news-grid">
+                <div th:each="item : ${news}" class="news-card">
+                    <div class="news-card-image" th:if="${item.imageUrl != null and item.imageUrl != ''}"
+                         th:style="'background-image: url(' + ${item.imageUrl} + ');'"></div>
+                    <div class="news-card-icon" th:unless="${item.imageUrl != null and item.imageUrl != ''}">📰</div>
+                    <div class="news-card-body">
+                        <span th:if="${item.publishedAt != null and item.publishedAt != ''}" class="news-date" th:text="${item.publishedAt}"></span>
+                        <h3 class="news-title" th:text="${item.title}">Заголовок</h3>
+                        <p class="news-description" th:text="${item.description}">Описание...</p>
+                        <a th:href="${item.url}" target="_blank" class="news-link">Читать далее →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(news)}" class="text-center" style="padding: 3rem;">
+                <p>📭 Новости временно недоступны. Загляните позже!</p>
+            </div>
+
+            <div class="text-center" style="margin-top: 2rem;">
                 <a th:href="@{/news}" class="btn btn-primary">Все новости →</a>
             </div>
         </div>
@@ -81,18 +115,18 @@
 </div>
 
 <!-- Статистика -->
-<section class="section stats-section">
+<section class="stats-section">
     <div class="container">
         <div class="stats-grid">
-            <div>
+            <div class="stat-item">
                 <div class="stat-number">50+</div>
                 <div class="stat-label">танцевальных залов</div>
             </div>
-            <div>
+            <div class="stat-item">
                 <div class="stat-number">100+</div>
                 <div class="stat-label">мастер-классов</div>
             </div>
-            <div>
+            <div class="stat-item">
                 <div class="stat-number">1000+</div>
                 <div class="stat-label">участников</div>
             </div>

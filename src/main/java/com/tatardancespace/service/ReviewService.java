@@ -95,4 +95,16 @@ public class ReviewService {
         log.debug("Fetching reviews for user: {}", userId);
         return reviewRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
+
+    public Review getReviewById(Long id) {
+        log.debug("Fetching review by id: {}", id);
+        return reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + id));
+    }
+
+    @Transactional
+    public void deleteReview(Long id) {
+        log.info("Deleting review {}", id);
+        reviewRepository.deleteById(id);
+    }
 }

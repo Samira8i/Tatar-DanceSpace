@@ -1,4 +1,3 @@
-/* ========== ПЕРЕМЕННЫЕ ========== */
 :root {
     /* Основные цвета */
     --peach: #F2C4CD;
@@ -50,14 +49,12 @@
     --spacing-4xl: 7rem;
 }
 
-/* ========== СБРОС ========== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* ========== БАЗОВЫЕ СТИЛИ ========== */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg-primary);
@@ -103,7 +100,6 @@ a:hover {
     color: var(--sapphire-light);
 }
 
-/* ========== УТИЛИТЫ ========== */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -135,21 +131,6 @@ a:hover {
 .text-left { text-align: left; }
 .text-right { text-align: right; }
 
-.text-peach { color: var(--peach-dark); }
-.text-sapphire { color: var(--sapphire); }
-
-.mt-1 { margin-top: var(--spacing-sm); }
-.mt-2 { margin-top: var(--spacing-md); }
-.mt-3 { margin-top: var(--spacing-lg); }
-.mt-4 { margin-top: var(--spacing-xl); }
-.mt-5 { margin-top: var(--spacing-2xl); }
-
-.mb-1 { margin-bottom: var(--spacing-sm); }
-.mb-2 { margin-bottom: var(--spacing-md); }
-.mb-3 { margin-bottom: var(--spacing-lg); }
-.mb-4 { margin-bottom: var(--spacing-xl); }
-.mb-5 { margin-bottom: var(--spacing-2xl); }
-
 /* ========== СЕТКА ========== */
 .grid {
     display: grid;
@@ -164,50 +145,16 @@ a:hover {
     .grid-2, .grid-3, .grid-4 {
         grid-template-columns: 1fr;
     }
-
     h1 { font-size: 2.5rem; }
     h2 { font-size: 1.75rem; }
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+    .section {
+        padding: var(--spacing-2xl) 0;
+    }
 }
 
-/* ========== КАРТОЧКИ ========== */
-.card {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-sm);
-}
-
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-}
-
-.card-image {
-    height: 200px;
-    background: var(--peach-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.card-content {
-    padding: var(--spacing-lg);
-}
-
-.card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-    color: var(--sapphire);
-}
-
-.card-text {
-    color: var(--gray-600);
-    font-size: 0.875rem;
-}
-
-/* ========== АНИМАЦИИ ========== */
 @keyframes fadeUp {
     from {
         opacity: 0;
@@ -219,15 +166,17 @@ a:hover {
     }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
 .fade-up {
     animation: fadeUp 0.6s ease-out;
 }
 
-.fade-in {
-    animation: fadeIn 0.4s ease-out;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

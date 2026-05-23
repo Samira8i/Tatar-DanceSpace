@@ -2,26 +2,32 @@ package com.tatardancespace.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "events")
-public class Event {
+public class Event implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
+
     private String style;
     private String place;
-
-    @Column(length = 1000)
     private String description;
-
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -40,7 +46,8 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
-    public Event() {}
+    @ManyToMany(mappedBy = "favoriteEvents")
+    private List<User> favoritedByUsers = new ArrayList<>();
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -77,4 +84,20 @@ public class Event {
 
     public List<Like> getLikes() { return likes; }
     public void setLikes(List<Like> likes) { this.likes = likes; }
+
+    public List<User> getFavoritedByUsers() { return favoritedByUsers; }
+    public void setFavoritedByUsers(List<User> favoritedByUsers) { this.favoritedByUsers = favoritedByUsers; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equals(id, event.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : getClass().hashCode();
+    }
 }

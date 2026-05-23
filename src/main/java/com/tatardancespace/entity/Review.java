@@ -2,11 +2,16 @@ package com.tatardancespace.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "reviews")
-public class Review {
+public class Review implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +52,23 @@ public class Review {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+
+        if (id == null && review.id == null) {
+            return Objects.equals(user, review.user) && Objects.equals(hall, review.hall);
+        }
+
+        return Objects.equals(id, review.id);
+    }
+
+    @Override
+    public int hashCode() {
+        if (id != null) return id.hashCode();
+        return Objects.hash(user, hall);
+    }
 }

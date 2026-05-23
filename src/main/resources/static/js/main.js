@@ -1,3 +1,4 @@
+/*
 // Анимация при скролле
 document.addEventListener('DOMContentLoaded', function() {
     const fadeElements = document.querySelectorAll('.fade-in');
@@ -25,4 +26,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
-});
+});*/

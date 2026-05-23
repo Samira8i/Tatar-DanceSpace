@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/events")
-@Tag(name = "Likes API", description = "Управление лайками на событиях")
 public class LikeApiController {
 
     private final LikeService likeService;
@@ -25,7 +24,6 @@ public class LikeApiController {
     }
 
     @PostMapping("/{id}/like")
-    @Operation(summary = "Поставить/убрать лайк")
     public ResponseEntity<LikeResponse> toggleLike(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {

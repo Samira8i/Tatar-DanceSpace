@@ -50,7 +50,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setUsername(request.getUsername());
         user.setRole(Role.USER);
-        user.setAvatarEmoji("🕺");  // эмодзи по умолчанию
+        user.setAvatarEmoji("🕺");
         log.info("Registering user " + user.getUsername());
         return userRepository.save(user);
     }
@@ -63,7 +63,7 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 
     @Transactional

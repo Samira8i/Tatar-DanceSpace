@@ -3,26 +3,42 @@
 <nav th:fragment="navbar" class="navbar">
     <div class="navbar-container">
         <a th:href="@{/}" class="logo">
-             Tatar<span>DanceSpace</span>
+            Tatar<span>DanceSpace</span>
         </a>
-        <div class="nav-menu">
-            <div th:if="${#authorization.expression('isAuthenticated()')}">
+
+        <!-- Бургер-меню -->
+        <button class="menu-toggle" id="menuToggle" aria-label="Меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-menu" id="navMenu">
+            <!-- Ссылки Залы и События - только для авторизованных -->
+            <div th:if="${#authorization.expression('isAuthenticated()')}" class="nav-links">
                 <a th:href="@{/halls}" class="nav-link">Залы</a>
                 <a th:href="@{/events}" class="nav-link">События</a>
             </div>
 
-            <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <!-- Авторизованный пользователь: профиль и выход -->
+            <div th:if="${#authorization.expression('isAuthenticated()')}" class="nav-auth">
                 <a th:href="@{/profile}" class="nav-link">Профиль</a>
                 <a th:href="@{/logout}" class="btn btn-outline">Выйти</a>
             </div>
-            <div th:unless="${#authorization.expression('isAuthenticated()')}">
+
+            <!-- Неавторизованный: кнопки входа и регистрации -->
+            <div th:unless="${#authorization.expression('isAuthenticated()')}" class="nav-auth">
                 <a th:href="@{/login}" class="btn btn-outline">Войти</a>
                 <a th:href="@{/register}" class="btn btn-primary">Регистрация</a>
             </div>
+
+            <!-- Админка видна только админу -->
             <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                <a th:href="@{/admin}" class="nav-link">Админка</a>
+                <a th:href="@{/admin}" class="nav-link">🔧 Админка</a>
             </div>
         </div>
     </div>
 </nav>
+
+<script th:src="@{/js/navbar.js}"></script>
 </html>

@@ -8,44 +8,49 @@
 <section class="section">
     <div class="container">
         <div style="max-width: 600px; margin: 0 auto;">
-            <h2 class="section-title">Редактировать событие</h2>
+            <div class="card">
+                <div class="card-content">
+                    <h2 class="card-title">Редактирование события</h2>
 
-            <form th:action="@{/events/{id}/edit(id=${event.id})}" th:object="${eventRequest}" method="post">
-                <div class="form-group">
-                    <label class="form-label">Название</label>
-                    <input type="text" th:field="*{title}" class="form-control" required>
-                </div>
+                    <form th:action="@{/events/{id}/edit(id=${event.id})}" th:object="${eventRequest}" method="post">
+                        <div class="form-group">
+                            <label class="form-label">Название *</label>
+                            <input type="text" th:field="*{title}" class="form-control" required>
+                        </div>
 
-                <div class="form-group">
-                    <label class="form-label">Дата и время</label>
-                    <input type="datetime-local" th:field="*{dateTime}" class="form-control" required>
-                </div>
+                        <div class="form-group">
+                            <label class="form-label">Дата и время *</label>
+                            <input type="datetime-local" th:field="*{dateTime}" class="form-control" required>
+                        </div>
 
-                <div class="form-group">
-                    <label class="form-label">Стиль танца</label>
-                    <input type="text" th:field="*{style}" class="form-control">
-                </div>
+                        <div class="form-group">
+                            <label class="form-label">Стиль</label>
+                            <input type="text" th:field="*{style}" class="form-control" placeholder="Например: Contemporary, Hip-Hop, Salsa">
+                        </div>
 
-                <div class="form-group">
-                    <label class="form-label">Место проведения</label>
-                    <input type="text" th:field="*{place}" class="form-control">
-                </div>
+                        <div class="form-group">
+                            <label class="form-label">Место</label>
+                            <input type="text" th:field="*{place}" class="form-control" placeholder="Адрес или название площадки">
+                        </div>
 
-                <div class="form-group">
-                    <label class="form-label">Описание</label>
-                    <textarea th:field="*{description}" class="form-control" rows="5"></textarea>
-                </div>
+                        <div class="form-group">
+                            <label class="form-label">Описание</label>
+                            <textarea th:field="*{description}" class="form-control" rows="5" placeholder="Подробное описание события..."></textarea>
+                        </div>
 
-                <div class="form-group">
-                    <label class="form-label">Ссылка на фото</label>
-                    <input type="text" th:field="*{imageUrl}" class="form-control">
-                </div>
+                        <div class="form-group">
+                            <label class="form-label">Ссылка на изображение</label>
+                            <input type="url" th:field="*{imageUrl}" class="form-control" placeholder="https://...">
+                            <small class="form-text text-muted">Вставьте прямую ссылку на картинку</small>
+                        </div>
 
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                    <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-outline">Отмена</a>
+                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                            <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-outline">Отмена</a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </section>

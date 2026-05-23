@@ -5,11 +5,10 @@ import com.tatardancespace.dto.response.HallStatsResponse;
 import com.tatardancespace.dto.response.ReviewResponse;
 import com.tatardancespace.entity.Review;
 import com.tatardancespace.entity.User;
+import com.tatardancespace.exception.AccessDeniedException;
 import com.tatardancespace.exception.AlreadyReviewedException;
 import com.tatardancespace.service.ReviewService;
 import com.tatardancespace.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +20,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/halls")
-@Tag(name = "Reviews API", description = "Управление отзывами на залы")
 public class ReviewApiController {
 
     private final ReviewService reviewService;
@@ -33,7 +31,6 @@ public class ReviewApiController {
     }
 
     @PostMapping("/{id}/review")
-    @Operation(summary = "Добавить отзыв на зал")
     public ResponseEntity<?> addHallReview(
             @PathVariable Long id,
             @RequestParam Integer rating,
@@ -68,12 +65,33 @@ public class ReviewApiController {
     }
 
     @GetMapping("/{id}/stats")
-    @Operation(summary = "Получить статистику зала")
     public ResponseEntity<HallStatsResponse> getHallStats(@PathVariable Long id) {
         double averageRating = reviewService.getAverageRating(id);
         int reviewsCount = reviewService.getReviewsByHallId(id).size();
 
         HallStatsResponse response = new HallStatsResponse(averageRating, reviewsCount);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity<Map<String, Object>> deleteReview(
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        User currentUser = userService.findByEmail(userDetails.getUsername());
+        boolean isAdmin = currentUser.getRole().name().equals("ADMIN");
+
+        Review review = reviewService.getReviewById(reviewId);
+
+        if (!review.getUser().getId().equals(currentUser.getId()) && !isAdmin) {
+            throw new AccessDeniedException("удаления этого отзыва");
+        }
+
+        reviewService.deleteReview(reviewId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Отзыв удалён");
         return ResponseEntity.ok(response);
     }
 }
