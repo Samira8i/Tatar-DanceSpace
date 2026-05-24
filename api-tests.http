@@ -1,0 +1,40 @@
+### 1. ЛАЙКИ
+
+### Поставить лайк на событие 1 (заменить 1 на существующее событие, в дальнейшем - аналогично)
+POST http://localhost:8080/tatardancespace/api/events/1/like
+Authorization: Basic aXZhbkBtYWlsLnJ1OnBhc3N3b3Jk
+Content-Type: application/json
+
+
+### 2. КОММЕНТАРИИ
+
+### Добавить комментарий к событию 1
+POST http://localhost:8080/tatardancespace/api/events/1/comment?text=Отличное событие!
+Authorization: Basic aXZhbkBtYWlsLnJ1OnBhc3N3b3Jk
+Content-Type: application/x-www-form-urlencoded
+
+### Получить комментарии события 1
+GET http://localhost:8080/tatardancespace/api/events/1/comments
+Authorization: Basic aXZhbkBtYWlsLnJ1OnBhc3N3b3Jk
+
+### Удалить комментарий (ID комментария нужно заменить на реальный)
+DELETE http://localhost:8080/tatardancespace/api/events/comments/1
+Authorization: Basic aXZhbkBtYWlsLnJ1OnBhc3N3b3Jk
+
+### 3. ОТЗЫВЫ НА ЗАЛЫ
+
+### Добавить отзыв на зал 1
+POST http://localhost:8080/tatardancespace/api/halls/1/review?rating=5&text=Отличный зал!
+Authorization: Basic aXZhbkBtYWlsLnJ1OnBhc3N3b3Jk
+Content-Type: application/x-www-form-urlencoded
+
+
+### Удалить отзыв
+DELETE http://localhost:8080/tatardancespace/api/halls/reviews/1
+Authorization: Basic aXZhbkBtYWlsLnJ1OnBhc3N3b3Jk
+
+### 4. НОВОСТИ
+
+### Получить новости
+GET http://localhost:8080/tatardancespace/api/news?page=0&size=10
+Authorization: Basic aXZhbkBtYWlsLnJ1OnBhc3N3b3Jk
