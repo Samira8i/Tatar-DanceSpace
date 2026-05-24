@@ -2,11 +2,12 @@
     'use strict';
 
     const hallId = window.hallId;
+    const contextPath = window.CONTEXT_PATH || '';
 
     if (!hallId) return;
 
     function updateHallStats() {
-        fetch('/tatardancespace/api/halls/' + hallId + '/stats')
+        fetch(contextPath + '/api/halls/' + hallId + '/stats')
             .then(res => res.json())
             .then(data => {
                 const avgRating = document.querySelector('.avg-rating');
@@ -28,7 +29,7 @@
 
             if (!rating) return;
 
-            fetch('/tatardancespace/api/halls/' + hallId + '/review?rating=' + rating + '&text=' + encodeURIComponent(text), { method: 'POST' })
+            fetch(contextPath + '/api/halls/' + hallId + '/review?rating=' + rating + '&text=' + encodeURIComponent(text), { method: 'POST' })
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -73,7 +74,7 @@
         const reviewId = deleteBtn.getAttribute('data-review-id');
         if (!reviewId || !confirm('Удалить этот отзыв?')) return;
 
-        fetch('/tatardancespace/api/halls/reviews/' + reviewId, { method: 'DELETE' })
+        fetch(contextPath + '/api/halls/reviews/' + reviewId, { method: 'DELETE' })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {

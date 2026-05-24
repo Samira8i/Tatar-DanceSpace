@@ -565,7 +565,6 @@
     background: rgba(5, 31, 69, 0.05);
 }
 
-/* ========== АДАПТАЦИЯ ========== */
 @media (max-width: 768px) {
     .halls-grid {
         grid-template-columns: 1fr;
@@ -742,7 +741,7 @@
     gap: 1rem;
 }
 
-/* Comment */
+
 .comment {
     padding: 0.75rem;
     border-bottom: 1px solid var(--gray-200);
@@ -784,7 +783,6 @@
     margin-top: 1rem;
 }
 
-/* Hall detail page */
 .hall-detail-container {
     max-width: 800px;
     margin: 0 auto;
@@ -833,7 +831,6 @@
     gap: 1rem;
 }
 
-/* Review */
 .review {
     padding: 0.75rem;
     border-bottom: 1px solid var(--gray-200);
@@ -869,7 +866,6 @@
     color: #7A8450;
 }
 
-/* Status badges */
 .status-approved {
     color: #7A8450;
 }
@@ -878,7 +874,6 @@
     color: orange;
 }
 
-/* Danger button */
 .btn-danger {
     border-color: #dc3545;
     color: #dc3545;

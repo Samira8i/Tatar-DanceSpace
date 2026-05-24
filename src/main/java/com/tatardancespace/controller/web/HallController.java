@@ -1,7 +1,6 @@
 package com.tatardancespace.controller.web;
 
 import com.tatardancespace.dto.request.HallRequest;
-import com.tatardancespace.dto.request.ReviewRequest;
 import com.tatardancespace.entity.DanceHall;
 import com.tatardancespace.entity.Status;
 import com.tatardancespace.service.CustomUserDetails;
@@ -52,7 +51,6 @@ public class HallController {
         model.addAttribute("hall", danceHallService.getHallById(id));
         model.addAttribute("reviews", reviewService.getReviewsByHallId(id));
         model.addAttribute("averageRating", reviewService.getAverageRating(id));
-        model.addAttribute("reviewRequest", new ReviewRequest());
 
         if (userDetails != null) {
             model.addAttribute("hasReviewed", reviewService.hasUserReviewed(id, userDetails.getId()));

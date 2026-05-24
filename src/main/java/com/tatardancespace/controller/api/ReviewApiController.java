@@ -1,6 +1,5 @@
 package com.tatardancespace.controller.api;
 
-import com.tatardancespace.dto.request.ReviewRequest;
 import com.tatardancespace.dto.response.HallStatsResponse;
 import com.tatardancespace.dto.response.ReviewResponse;
 import com.tatardancespace.entity.Review;
@@ -31,7 +30,7 @@ public class ReviewApiController {
     }
 
     @PostMapping("/{id}/review")
-    public ResponseEntity<?> addHallReview(
+    public ResponseEntity<ReviewResponse> addHallReview(
             @PathVariable Long id,
             @RequestParam Integer rating,
             @RequestParam(required = false) String text,
@@ -39,12 +38,7 @@ public class ReviewApiController {
 
         try {
             User user = userService.findByEmail(userDetails.getUsername());
-
-            ReviewRequest request = new ReviewRequest();
-            request.setRating(rating);
-            request.setText(text);
-
-            Review review = reviewService.addReview(id, request, user);
+            Review review = reviewService.addReview(id, rating, text, user);
 
             ReviewResponse response = new ReviewResponse(
                     review.getId(),
@@ -53,13 +47,10 @@ public class ReviewApiController {
                     review.getText(),
                     review.getCreatedAt()
             );
-
             return ResponseEntity.ok(response);
 
         } catch (AlreadyReviewedException e) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("success", false);
-            errorResponse.put("message", e.getMessage());
+            ReviewResponse errorResponse = new ReviewResponse(false);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }

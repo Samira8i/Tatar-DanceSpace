@@ -1,21 +1,37 @@
+// Events Detail Module - Лайки, избранное, комментарии
+
 (function() {
     'use strict';
 
     const eventId = window.eventId;
+    const contextPath = window.CONTEXT_PATH || '';
 
     if (!eventId) return;
 
-    function updateStats() {
-        fetch('/tatardancespace/api/events/' + eventId + '/stats')
-            .then(res => res.json())
-            .then(data => {
-                updateElements('.like-count', data.likesCount);
-                updateElements('.favorite-count', data.favoritesCount);
-                updateElements('.comment-count, .comment-count-display', data.commentsCount);
-                updateIconColor('.like-icon', data.liked, '#dc3545');
-                updateIconColor('.favorite-icon', data.isFavorited, '#f5a623');
-            })
-            .catch(error => console.error('Error updating stats:', error));
+    // Утилиты
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/[&<>]/g, m => {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px; padding: 12px 20px;
+            border-radius: 8px; background: ${type === 'success' ? '#7A8450' : '#dc3545'};
+            color: white; z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 14px;
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
     }
 
     function updateElements(selector, value) {
@@ -28,6 +44,19 @@
         });
     }
 
+    function updateStats() {
+        fetch(contextPath + '/api/events/' + eventId + '/stats')
+            .then(res => res.json())
+            .then(data => {
+                updateElements('.like-count', data.likesCount);
+                updateElements('.favorite-count', data.favoritesCount);
+                updateElements('.comment-count, .comment-count-display', data.commentsCount);
+                updateIconColor('.like-icon', data.liked, '#dc3545');
+                updateIconColor('.favorite-icon', data.isFavorited, '#f5a623');
+            })
+            .catch(error => console.error('Error updating stats:', error));
+    }
+
     function sendRequest(url, onSuccess) {
         fetch(url, { method: 'POST' })
             .then(res => res.json())
@@ -35,26 +64,29 @@
             .catch(error => console.error('Error:', error));
     }
 
+    // Лайк
     const likeBtn = document.querySelector('.like-btn');
     if (likeBtn) {
         likeBtn.addEventListener('click', () => {
-            sendRequest('/tatardancespace/api/events/' + eventId + '/like', data => {
+            sendRequest(contextPath + '/api/events/' + eventId + '/like', data => {
                 updateElements('.like-count', data.likesCount);
                 updateIconColor('.like-icon', data.liked, '#dc3545');
             });
         });
     }
 
+    // Избранное
     const favoriteBtn = document.querySelector('.favorite-btn');
     if (favoriteBtn) {
         favoriteBtn.addEventListener('click', () => {
-            sendRequest('/tatardancespace/api/events/' + eventId + '/favorite', data => {
+            sendRequest(contextPath + '/api/events/' + eventId + '/favorite', data => {
                 updateElements('.favorite-count', data.favoritesCount);
                 updateIconColor('.favorite-icon', data.isFavorited, '#f5a623');
             });
         });
     }
 
+    // Добавление комментария
     const submitComment = document.getElementById('submit-comment');
     if (submitComment) {
         submitComment.addEventListener('click', () => {
@@ -62,7 +94,7 @@
             const text = textarea ? textarea.value.trim() : '';
             if (!text) return;
 
-            fetch('/tatardancespace/api/events/' + eventId + '/comment?text=' + encodeURIComponent(text), { method: 'POST' })
+            fetch(contextPath + '/api/events/' + eventId + '/comment?text=' + encodeURIComponent(text), { method: 'POST' })
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -96,6 +128,7 @@
         commentsList.appendChild(newComment);
     }
 
+    // Удаление комментария
     document.addEventListener('click', (e) => {
         const deleteBtn = e.target.closest('.delete-comment-btn');
         if (!deleteBtn) return;
@@ -103,7 +136,7 @@
         const commentId = deleteBtn.getAttribute('data-comment-id');
         if (!commentId || !confirm('Удалить этот комментарий?')) return;
 
-        fetch('/tatardancespace/api/events/comments/' + commentId, { method: 'DELETE' })
+        fetch(contextPath + '/api/events/comments/' + commentId, { method: 'DELETE' })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -115,29 +148,6 @@
             })
             .catch(error => console.error('Error deleting comment:', error));
     });
-
-    function escapeHtml(text) {
-        if (!text) return '';
-        return text.replace(/[&<>]/g, m => {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    function showNotification(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.textContent = message;
-        notification.style.cssText = `
-            position: fixed; top: 20px; right: 20px; padding: 12px 20px;
-            border-radius: 8px; background: ${type === 'success' ? '#7A8450' : '#dc3545'};
-            color: white; z-index: 9999;
-        `;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 3000);
-    }
 
     updateStats();
 })();

@@ -107,4 +107,5 @@ test-output/
 *.json.tmp
 
 # ========== ОТЧЁТЫ ==========
-*.html.tmp!/mvnw.cmd
+*.html.tmp
+!/mvnw.cmd

@@ -1,6 +1,5 @@
 package com.tatardancespace.service;
 
-import com.tatardancespace.dto.request.ReviewRequest;
 import com.tatardancespace.entity.DanceHall;
 import com.tatardancespace.entity.Review;
 import com.tatardancespace.entity.User;
@@ -50,8 +49,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review addReview(Long hallId, ReviewRequest request, User user) {
-        log.info("Adding review for hall {} by user {}", hallId, user.getEmail());
+    public Review addReview(Long hallId, Integer rating, String text, User user) {
+        log.info("User {} adding review for hall {}", user.getEmail(), hallId);
 
         DanceHall hall = danceHallRepository.findById(hallId)
                 .orElseThrow(() -> new HallNotFoundException(hallId));
@@ -63,8 +62,8 @@ public class ReviewService {
         }
 
         Review review = new Review();
-        review.setRating(request.getRating());
-        review.setText(request.getText());
+        review.setRating(rating);
+        review.setText(text);
         review.setUser(user);
         review.setHall(hall);
 

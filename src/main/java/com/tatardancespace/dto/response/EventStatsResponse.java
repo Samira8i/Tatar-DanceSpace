@@ -3,9 +3,9 @@ package com.tatardancespace.dto.response;
 public class EventStatsResponse {
     private long likesCount;
     private long commentsCount;
-    private long favoritesCount;  // ← добавить
+    private long favoritesCount;
     private boolean isLiked;
-    private boolean isFavorited;   // ← добавить
+    private boolean isFavorited;
 
     public EventStatsResponse() {}
 
@@ -17,7 +17,6 @@ public class EventStatsResponse {
         this.isFavorited = isFavorited;
     }
 
-    // Геттеры и сеттеры
     public long getLikesCount() { return likesCount; }
     public void setLikesCount(long likesCount) { this.likesCount = likesCount; }
     public long getCommentsCount() { return commentsCount; }

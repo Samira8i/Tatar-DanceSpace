@@ -56,10 +56,11 @@
 
             <div class="halls-grid">
                 <div th:each="hall : ${topRatedHalls}" class="hall-card">
-                    <div class="hall-card-image">
+                    <div class="hall-card-image" style="height: 160px; overflow: hidden; position: relative;">
                         <div th:if="${!#strings.isEmpty(hall.imageUrl)}"
-                             th:style="'background-image: url(' + ${hall.imageUrl} + ');'"></div>
-                        <div th:unless="${!#strings.isEmpty(hall.imageUrl)}" class="hall-card-icon">🏛️</div>
+                             th:style="'background-image: url(' + ${hall.imageUrl} + '); background-size: cover; background-position: center; width: 100%; height: 100%;'">
+                        </div>
+                        <div th:unless="${!#strings.isEmpty(hall.imageUrl)}" class="hall-card-icon" style="height: 160px; display: flex; align-items: center; justify-content: center; background: var(--peach-dark); font-size: 3rem;">🏛️</div>
                         <div class="rating-badge">
                             ⭐ <span th:text="${#numbers.formatDecimal(hall.averageRating, 1, 1)}">0</span>
                         </div>
@@ -135,7 +136,5 @@
 </section>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
-
-<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

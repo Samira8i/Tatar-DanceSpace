@@ -1,40 +1,65 @@
-version: '3.8'
-
 services:
+
   postgres:
-    image: postgres:15
+    image: postgres:16
     container_name: dancespace-postgres
     environment:
       POSTGRES_DB: dancespace
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5435:5432"  # Используем порт 5434
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - dancespace-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dancespace"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
-    image: redis:7-alpine
+    image: redis:7.4
     container_name: dancespace-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    command: redis-server --appendonly yes
     networks:
       - dancespace-network
-    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-networks:
-  dancespace-network:
-    driver: bridge
+  app:
+    build: .
+    container_name: dancespace-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dancespace
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      NEWS_API_KEY: ${NEWS_API_KEY}
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+    networks:
+      - dancespace-network
 
 volumes:
   postgres_data:
   redis_data:
+
+networks:
+  dancespace-network:

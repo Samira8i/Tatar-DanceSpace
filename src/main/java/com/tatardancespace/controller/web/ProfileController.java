@@ -23,6 +23,12 @@ public class ProfileController {
     private final ReviewService reviewService;
     private final FavoriteService favoriteService;
 
+    private static final List<String> AVATARS = List.of(
+            "🕺", "💃", "🩰", "🎭", "🎵", "🎶", "⭐", "🌟",
+            "💫", "✨", "🦋", "🌸", "🌺", "🔥", "💪", "🎯",
+            "🏆", "🎉", "🥳", "💖", "❤️", "💜", "💙", "💚"
+    );
+
     public ProfileController(UserService userService,
                              EventService eventService,
                              DanceHallService danceHallService,
@@ -42,34 +48,27 @@ public class ProfileController {
         List<Event> myEvents = eventService.getEventsByOrganizer(user.getId());
         List<DanceHall> myHalls = danceHallService.getHallsByOwner(user.getId());
         List<Review> myReviews = reviewService.getReviewsByUserId(user.getId());
-        List<Event> favoriteEvents = favoriteService.getUserFavoriteEvents(user.getId());  // ← ДОБАВИТЬ
+        List<Event> favoriteEvents = favoriteService.getUserFavoriteEvents(user.getId());
 
         model.addAttribute("user", user);
         model.addAttribute("myEvents", myEvents != null ? myEvents : List.of());
         model.addAttribute("myHalls", myHalls != null ? myHalls : List.of());
         model.addAttribute("myReviews", myReviews != null ? myReviews : List.of());
-        model.addAttribute("favoriteEvents", favoriteEvents != null ? favoriteEvents : List.of());  // ← ДОБАВИТЬ
+        model.addAttribute("favoriteEvents", favoriteEvents != null ? favoriteEvents : List.of());
 
         model.addAttribute("eventsCount", myEvents != null ? myEvents.size() : 0);
         model.addAttribute("hallsCount", myHalls != null ? myHalls.size() : 0);
         model.addAttribute("reviewsCount", myReviews != null ? myReviews.size() : 0);
-        model.addAttribute("favoritesCount", favoriteEvents != null ? favoriteEvents.size() : 0);  // ← ДОБАВИТЬ
+        model.addAttribute("favoritesCount", favoriteEvents != null ? favoriteEvents.size() : 0);
 
         return "profile/index";
     }
 
-    // Форма редактирования профиля
     @GetMapping("/edit")
     public String editProfileForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.findByEmail(userDetails.getUsername());
         model.addAttribute("user", user);
-
-        List<String> avatars = List.of(
-                "🕺", "💃", "🩰", "🎭", "🎵", "🎶", "⭐", "🌟",
-                "💫", "✨", "🦋", "🌸", "🌺", "🔥", "💪", "🎯",
-                "🏆", "🎉", "🥳", "💖", "❤️", "💜", "💙", "💚"
-        );
-        model.addAttribute("avatars", avatars);
+        model.addAttribute("avatars", AVATARS);
 
         return "profile/edit";
     }

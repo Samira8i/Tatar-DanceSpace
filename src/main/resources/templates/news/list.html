@@ -2,30 +2,46 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: head}">
     <title>Новости танцев | Tatar DanceSpace</title>
+
     <link rel="stylesheet" th:href="@{/css/news.css}">
+
     <meta name="context-path" th:content="@{/}">
 </head>
 <body>
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<section class="section">
+<section class="news-page">
+
     <div class="container">
+
         <div class="news-header">
-            <h1> Новости мира танцев</h1>
-            <p>Свежие новости со всего мира. Листайте вниз — новости подгружаются автоматически</p>
+            <h1>Новости мира танцев</h1>
+
+            <p>
+                Свежие новости со всего мира танцев.
+                Листайте вниз — новости подгружаются автоматически.
+            </p>
         </div>
 
+        <div class="news-counter" id="news-counter"></div>
+
         <div id="news-container" class="news-grid">
+
             <div class="news-loading">
                 <div class="news-loading-spinner"></div>
+
                 <p>Загрузка новостей...</p>
             </div>
+
         </div>
 
         <div id="loading-indicator" style="display: none;"></div>
+
         <div id="news-end-marker" style="display: none;"></div>
+
     </div>
+
 </section>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
@@ -37,5 +53,6 @@
 </script>
 
 <script th:src="@{/js/news.js}"></script>
+
 </body>
 </html>

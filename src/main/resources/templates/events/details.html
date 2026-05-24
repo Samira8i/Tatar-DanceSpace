@@ -9,8 +9,10 @@
     <div class="container">
         <div class="event-detail-container">
             <div class="card">
-                <div class="card-image event-detail-image">
-                    <div th:if="${event.imageUrl}" th:style="'background-image: url(' + ${event.imageUrl} + ');'"></div>
+                <div class="card-image event-detail-image" style="height: 300px; background-size: cover; background-position: center;">
+                    <div th:if="${event.imageUrl}"
+                         th:style="'background-image: url(' + ${event.imageUrl} + '); background-size: cover; background-position: center; width: 100%; height: 100%;'">
+                    </div>
                     <div th:unless="${event.imageUrl}" class="event-detail-placeholder">🎭</div>
                 </div>
                 <div class="card-content">
@@ -90,9 +92,14 @@
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script th:inline="javascript">
+    /*<![CDATA[*/
+    window.CONTEXT_PATH = /*[[@{/}]]*/ '';
     window.eventId = /*[[${event.id}]]*/ null;
+    /*]]>*/
 </script>
+
 <script th:src="@{/js/events-detail.js}"></script>
 
 </body>

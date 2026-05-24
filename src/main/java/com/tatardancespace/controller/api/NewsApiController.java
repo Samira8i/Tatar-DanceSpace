@@ -1,13 +1,12 @@
 package com.tatardancespace.controller.api;
 
+import com.tatardancespace.dto.response.NewsPageResponse;
 import com.tatardancespace.dto.response.NewsResponse;
 import com.tatardancespace.service.NewsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/news")
@@ -20,7 +19,7 @@ public class NewsApiController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getNews(
+    public ResponseEntity<NewsPageResponse> getNews(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int size) {
 
@@ -28,15 +27,8 @@ public class NewsApiController {
         int safePage = Math.max(0, page);
 
         List<NewsResponse> news = newsService.getDanceNews(safePage, safeSize);
-
         boolean hasMore = news.size() == safeSize;
 
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("news", news);
-        response.put("hasMore", hasMore);
-        response.put("currentPage", safePage);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new NewsPageResponse(news, hasMore, safePage));
     }
 }

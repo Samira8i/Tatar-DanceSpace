@@ -1,15 +1,15 @@
 package com.tatardancespace.controller.api;
 
+import com.tatardancespace.dto.response.FavoriteResponse;
+import com.tatardancespace.entity.Event;
 import com.tatardancespace.service.CustomUserDetails;
 import com.tatardancespace.service.EventService;
 import com.tatardancespace.service.FavoriteService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
@@ -24,7 +24,7 @@ public class FavoriteApiController {
     }
 
     @PostMapping("/{id}/favorite")
-    public ResponseEntity<Map<String, Object>> toggleFavorite(
+    public ResponseEntity<FavoriteResponse> toggleFavorite(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -33,35 +33,23 @@ public class FavoriteApiController {
         long commentsCount = eventService.getEventById(id).getComments().size();
         long likesCount = eventService.getEventById(id).getLikes().size();
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("isFavorited", isFavorited);
-        response.put("favoritesCount", favoritesCount);
-        response.put("commentsCount", commentsCount);
-        response.put("likesCount", likesCount);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new FavoriteResponse(true, isFavorited, favoritesCount, commentsCount, likesCount));
     }
 
     @GetMapping("/{id}/favorite/status")
-    public ResponseEntity<Map<String, Object>> getFavoriteStatus(
+    public ResponseEntity<FavoriteResponse> getFavoriteStatus(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         boolean isFavorited = favoriteService.isFavorite(userDetails.getId(), id);
         long favoritesCount = favoriteService.getFavoritesCount(id);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("isFavorited", isFavorited);
-        response.put("favoritesCount", favoritesCount);
-        response.put("eventId", id);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new FavoriteResponse(true, isFavorited, favoritesCount, 0, 0));
     }
 
     @GetMapping("/favorites")
-    @Operation(summary = "Получить все избранные события пользователя")
-    public ResponseEntity<?> getUserFavorites(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<Event>> getUserFavorites(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         var favorites = favoriteService.getUserFavoriteEvents(userDetails.getId());
         return ResponseEntity.ok(favorites);
     }
