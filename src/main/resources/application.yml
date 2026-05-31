@@ -25,6 +25,11 @@ spring:
   cache:
     type: redis
 
+news:
+  api:
+    key: ${NEWS_API_KEY:}
+    url: https://newsapi.org/v2/everything
+
 oauth:
   yandex:
     client-id: ${CLIENT_ID}
