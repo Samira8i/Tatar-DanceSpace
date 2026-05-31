@@ -7,7 +7,7 @@ import com.tatardancespace.entity.User;
 import com.tatardancespace.exception.AccessDeniedException;
 import com.tatardancespace.exception.EventNotFoundException;
 import com.tatardancespace.repository.EventRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;

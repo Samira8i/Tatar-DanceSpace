@@ -1,5 +1,6 @@
 package com.tatardancespace.handler;
 
+import com.tatardancespace.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,28 @@ public class GlobalExceptionHandler {
         ModelAndView mav = new ModelAndView("error/403");
         mav.addObject("statusCode", 403);
         mav.addObject("errorMessage", "Доступ запрещён");
+        mav.addObject("path", request.getRequestURI());
+        return mav;
+    }
+
+    @ExceptionHandler(com.tatardancespace.exception.AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ModelAndView handleCustomAccessDenied(com.tatardancespace.exception.AccessDeniedException ex, HttpServletRequest request) {
+        log.warn("403 кастомная ошибка: {} - {}", request.getRequestURI(), ex.getMessage());
+        ModelAndView mav = new ModelAndView("error/403");
+        mav.addObject("statusCode", 403);
+        mav.addObject("errorMessage", ex.getMessage());
+        mav.addObject("path", request.getRequestURI());
+        return mav;
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ModelAndView handleBusinessException(BusinessException ex, HttpServletRequest request) {
+        log.warn("404 бизнес-ошибка: {} - {}", request.getRequestURI(), ex.getMessage());
+        ModelAndView mav = new ModelAndView("error/404");
+        mav.addObject("statusCode", 404);
+        mav.addObject("errorMessage", ex.getMessage());
         mav.addObject("path", request.getRequestURI());
         return mav;
     }

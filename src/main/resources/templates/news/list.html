@@ -48,7 +48,7 @@
 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    window.CONTEXT_PATH = /*[[@{/}]]*/ '';
+    window.CONTEXT_PATH = (/*[[@{/}]]*/ '').replace(/\/$/, '');
     /*]]>*/
 </script>
 

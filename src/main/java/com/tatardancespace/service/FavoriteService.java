@@ -53,7 +53,7 @@ public class FavoriteService {
 
 
     @Transactional
-    @CacheEvict(value = {"events", "eventStats"}, key = "#eventId")
+    @CacheEvict(value = "events", allEntries = true)
     public void addFavorite(Long userId, Long eventId) {
         log.info("User {} adding favorite event {}", userId, eventId);
 
@@ -77,7 +77,7 @@ public class FavoriteService {
 
 
     @Transactional
-    @CacheEvict(value = {"events", "eventStats"}, key = "#eventId")
+    @CacheEvict(value = "events", allEntries = true)
     public void removeFavorite(Long userId, Long eventId) {
         log.info("User {} removing favorite event {}", userId, eventId);
 
